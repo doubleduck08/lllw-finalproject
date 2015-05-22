@@ -20,12 +20,13 @@ class Node
 public:
   Node();
   ~Node();
+  vector<Edge *> _edge;
 
   /* data */
 private:
   int _color;
   bool _traveled;
-  vector<Edge *> _edge;
+  
 };
 
 class Edge
@@ -33,6 +34,7 @@ class Edge
 public:
   Edge();
   ~Edge();
+  Node *getNeighbor(Node *n);
 
   /* data */
 private:
@@ -44,11 +46,12 @@ class Component
 public:
   Component();
   ~Component();
+  vector<Node *> _nodes;
+  vector<Edge *> _edges;
 
 private:
   /* data */
-  vector<Node *> _nodes;
-  vector<Edge *> _edges;
+  
 };
 
 class pattern
@@ -56,16 +59,18 @@ class pattern
 public:
   pattern();
   ~pattern();
-
+  void findcomponent();
+  vector<Shape *> _shapes;
+  vector<Component *> _comps;
+  vector<Node *> _nodes; // all
+  vector<Edge *> _edges; // all
   /* data */
 private:
   int _alpha;
   int _beta;
   int _omega;
-  vector<Shape *> _shapes;
-  vector<Component *> _comps;
-  vector<Node *> _nodes; // all
-  vector<Edge *> _edges; // all
+  
+
 };
 
 # endif
