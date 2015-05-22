@@ -13,16 +13,21 @@ public:
 private:
   int _id;
   int _x1, _x2, _y1, _y2;
+
+  Node* _node;
+  int _x2WithAlpha;
+  int _y2WithBeta;
 };
 
 class Node
 {
 public:
-  Node();
+  Node(Shape*);
   ~Node();
 
-  /* data */
 private:
+  Shape* _shape;
+
   int _color;
   bool _traveled;
   vector<Edge *> _edge;
@@ -34,7 +39,6 @@ public:
   Edge();
   ~Edge();
 
-  /* data */
 private:
   Node* _node[2];
 };
@@ -46,26 +50,31 @@ public:
   ~Component();
 
 private:
-  /* data */
   vector<Node *> _nodes;
   vector<Edge *> _edges;
 };
 
-class pattern
+class Pattern
 {
 public:
-  pattern();
-  ~pattern();
+  Pattern();
+  ~Pattern();
+  bool nodeInitailize();
+  bool sortX1();
+  bool sortY1();
+  bool edgeInitailize();
 
-  /* data */
 private:
   int _alpha;
   int _beta;
   int _omega;
   vector<Shape *> _shapes;
-  vector<Component *> _comps;
+
+  int _nodeSize;
+  int _edgeSize;
   vector<Node *> _nodes; // all
   vector<Edge *> _edges; // all
+  vector<Component *> _comps;
 };
 
 # endif
