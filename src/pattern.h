@@ -1,7 +1,11 @@
 # ifndef PATTERN_H
 # define PATTERN_H
 
+# include <algorithm>
 # include <vector>
+# include <map>
+# include <fstream>
+# include <sstream>
 using namespace std;
 
 class Node;
@@ -10,10 +14,8 @@ class Shape
 {
 public:
   Shape(int, int, int, int, int);
-  Shape();
   ~Shape(){};
 
-private:
   int _id;
   int _x1, _x2, _y1, _y2;
 
@@ -26,7 +28,6 @@ public:
   Node(Shape*);
   ~Node();
 
-private:
   Shape* _shape;
 
   int _color;
@@ -37,10 +38,9 @@ private:
 class Edge
 {
 public:
-  Edge();
+  Edge(){};
   ~Edge();
 
-private:
   Node* _node[2];
 };
 
@@ -50,7 +50,6 @@ public:
   Component();
   ~Component(){};
 
-private:
   vector<Node *> _nodes;
   vector<Edge *> _edges;
 };
