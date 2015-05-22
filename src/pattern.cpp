@@ -19,8 +19,7 @@ bool Pattern::nodeInitailize()
     _nodes.push_back(n);
 
     _shapes[i]._node = n;
-    _shapes[i]._x2WithAlpha = _shapes[i]._x2 + _alpha;
-    _shapes[i]._y2WithBeta  = _shapes[i]._y2 + _beta;
+    _shapesMap[i] = (_shapes + i);
   }
   return true;
 }
@@ -39,22 +38,95 @@ bool Pattern::sortY1()
     return true;
 }
 
+bool findRangeX(vector<Shape *> &shapes,int &lower, int &upper, int &left, int &right)
+{
+  int a, b, c;
+  a = 0;
+  b = shapes.size() - 1;
+  while(a <= b)
+  {
+    c = (a + b) / 2
+    if(a == c){ left = c + 1; break; }
+    if(shapes[c]->x1 >= lower) b = c - 1;
+    else a = c;
+  }
+  a = 0;
+  b = shapes.size() - 1;
+  while(a <= b)
+  {
+    c = (a + b + 1) / 2
+    if(b == c){ right = c - 1; break; }
+    if(shapes[c]->x1 <= upper) a = c + 1;
+    else b = c;
+  }
+}
 
+bool findRangeY(vector<Shape *> &shapes,int &lower, int &upper, int &left, int &right)
+{
+  int a, b, c;
+  a = 0;
+  b = shapes.size() - 1;
+  while(a <= b)
+  {
+    c = (a + b) / 2
+    if(a == c){ left = c + 1; break; }
+    if(shapes[c]->y1 >= lower) b = c - 1;
+    else a = c;
+  }
+  a = 0;
+  b = shapes.size() - 1;
+  while(a <= b)
+  {
+    c = (a + b + 1) / 2
+    if(b == c){ right = c - 1; break; }
+    if(shapes[c]->y1 <= upper) a = c + 1;
+    else b = c;
+  }
+}
+
+bool addEdge(Node* A, Node* B)
+{
+  Edge* edge = new Edge();
+  edge->_node[0] = A;
+  edge->_node[1] = B;
+  A->_edge.push_back(edge);
+  B->_edge.push_back(edge);
+}
 
 bool Pattern::edgeInitailize()
 {
+  Shape* shapeA;
+  int left, right;
   _edgeSize = 0;
 
   sortX1();
   for(int i = 0 ; i < _nodeSize ; i++)
   {
-    // A = _shapes[i]
-    // check A.x2 < B.x1 < A.x2 + alpha
-    // check A.y1 < B.y1 or B.y2 < A.y2
-    // set conection
+    shapeA = _shapesMap[i];  // A = _shapes[i]
+    // check if A.x2 < B.x1 < A.x2 + alpha
+    findRangeX(_shapes, shapeA->x2, shapeA->x2 + alpha, left, right);
+    for(int j = left + 1 ; j < right; j++)
+    {
+      // check if A.y1 < B.y1 or B.y2 < A.y2
+      if(_shapes[j]->y1 < shapeA->y1 || _shapes[j]->y1 > shapeA->y2) continue;
+      if(_shapes[j]->y2 < shapeA->y1 || _shapes[j]->y2 > shapeA->y2) continue;
+      // set conection
+      addEdge(_shapes[j]->_node, shapeA->_node);
+    }
   }
 
   sortY1();
+  for(int i = 0 ; i < _nodeSize ; i++)
+  {
+    shapeA = _shapesMap[i];  // A = _shapes[i]
+    findRangeY(_shapes, shapeA->y2, shapeA->y2 + alpha, left, right);
+    for(int j = left + 1 ; j < right; j++)
+    {
+      if(_shapes[j]->x1 < shapeA->x1 || _shapes[j]->x1 > shapeA->x2) continue;
+      if(_shapes[j]->x2 < shapeA->x1 || _shapes[j]->x2 > shapeA->x2) continue;
+      addEdge(_shapes[j]->_node, shapeA->_node);
+    }
+  }
 
   return true;
 }

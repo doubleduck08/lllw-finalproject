@@ -4,6 +4,8 @@
 # include <vector>
 using namespace std;
 
+class Node;
+class Edge;
 class Shape
 {
 public:
@@ -15,8 +17,6 @@ private:
   int _x1, _x2, _y1, _y2;
 
   Node* _node;
-  int _x2WithAlpha;
-  int _y2WithBeta;
 };
 
 class Node
@@ -63,11 +63,13 @@ public:
   bool sortX1();
   bool sortY1();
   bool edgeInitailize();
+  bool addEdge(Node *, Node *);
 
 private:
   int _alpha;
   int _beta;
   int _omega;
+  map<int, Shape *> _shapesMap;
   vector<Shape *> _shapes;
 
   int _nodeSize;
