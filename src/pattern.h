@@ -5,7 +5,7 @@
 using namespace std;
 
 class Shape
-{
+ {
 public:
   Shape();
   ~Shape();
@@ -40,7 +40,7 @@ private:
 };
 
 class Component
-{
+{ 
 public:
   Component();
   ~Component();
@@ -51,11 +51,12 @@ private:
   vector<Edge *> _edges;
 };
 
-class pattern
+class Pattern
 {
 public:
-  pattern();
-  ~pattern();
+  Pattern();
+  ~Pattern();
+  bool readfile();
 
   /* data */
 private:

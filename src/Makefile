@@ -1,0 +1,19 @@
+AR       := ar
+ARFLAGS  := cr
+CXX      := g++
+CPPFLAGS := -O2 -I../lib
+
+all : ../bin/lllw
+	@echo -n ""
+
+clean :
+	rm *.o ../bin/lllw
+
+../bin/lllw : main.o pattern.o
+	$(CXX) $^ -o $@
+
+main.o : main.cpp pattern.h
+	$(CXX) $(CPPFLAGS) -c $< -o $@
+
+pattern.o : pattern.cpp pattern.h
+	$(CXX) $(CPPFLAGS) -c $< -o $@
