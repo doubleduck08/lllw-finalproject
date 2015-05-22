@@ -1,7 +1,8 @@
 AR       := ar
 ARFLAGS  := cr
 CXX      := g++
-CPPFLAGS := -O2 -I../lib
+CPPFLAGS := -g
+
 
 all : ../bin/lllw
 	@echo -n ""
