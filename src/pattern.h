@@ -4,11 +4,14 @@
 # include <vector>
 using namespace std;
 
+class Edge;
+
 class Shape
 {
 public:
+  Shape(int, int, int, int, int);
   Shape();
-  ~Shape();
+  ~Shape(){};
 
 private:
   int _id;
@@ -40,10 +43,10 @@ private:
 };
 
 class Component
-{
+{ 
 public:
   Component();
-  ~Component();
+  ~Component(){};
 
 private:
   /* data */
@@ -51,18 +54,19 @@ private:
   vector<Edge *> _edges;
 };
 
-class pattern
+class Pattern
 {
 public:
-  pattern();
-  ~pattern();
+  Pattern();
+  ~Pattern(){};
+  bool readfile(char*);
 
   /* data */
 private:
   int _alpha;
   int _beta;
   int _omega;
-  vector<Shape *> _shapes;
+  vector<Shape> _shapes;
   vector<Component *> _comps;
   vector<Node *> _nodes; // all
   vector<Edge *> _edges; // all
