@@ -27,12 +27,13 @@ class Node
 public:
   Node(Shape*);
   ~Node();
+  vector<Edge *> _edge;
 
   Shape* _shape;
 
   int _color;
   bool _traveled;
-  vector<Edge *> _edge;
+
 };
 
 class Edge
@@ -40,6 +41,7 @@ class Edge
 public:
   Edge(){};
   ~Edge();
+  Node *getNeighbor(Node *n);
 
   Node* _node[2];
 };
@@ -65,8 +67,9 @@ public:
   bool sortY1();
   bool edgeInitailize();
   bool addEdge(Node *, Node *);
+  void findcomponent();
 
-private:
+
   int _alpha;
   int _beta;
   int _omega;
