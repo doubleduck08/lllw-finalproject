@@ -124,7 +124,7 @@ bool findRangeX(vector<Shape *> &shapes, double lower, double upper, int &left, 
   right = l;
 }
 
-bool findRangeY(vector<Shape *> &shapes, int lower, int upper, int &left, int &right)
+bool findRangeY(vector<Shape *> &shapes, double lower, double upper, int &left, int &right)
 {
   int l, m, r;
   lower -= 0.5;
@@ -177,8 +177,8 @@ bool Pattern::edgeInitailize()
     {
       bool inRange = false;
       // check if A.y1 < B.y1 or B.y2 < A.y2
-      if(_shapes[j]->_y1 > shapeA->_y1 && _shapes[j]->_y1 < shapeA->_y2) inRange = true;
-      if(_shapes[j]->_y2 > shapeA->_y1 && _shapes[j]->_y2 < shapeA->_y2) inRange = true;
+      if(_shapes[j]->_y1 >= shapeA->_y1 && _shapes[j]->_y1 <= shapeA->_y2) inRange = true;
+      if(_shapes[j]->_y2 >= shapeA->_y1 && _shapes[j]->_y2 <= shapeA->_y2) inRange = true;
       if(!inRange) continue;
       // set conection
       addEdge(_shapes[j]->_node, shapeA->_node);
@@ -194,60 +194,48 @@ bool Pattern::edgeInitailize()
     for(int j = left + 1 ; j < right; j++)
     {
       bool inRange = false;
-      if(_shapes[j]->_x1 > shapeA->_x1 && _shapes[j]->_x1 < shapeA->_x2) inRange = true;
-      if(_shapes[j]->_x2 > shapeA->_x1 && _shapes[j]->_x2 < shapeA->_x2) inRange = true;
+      if(_shapes[j]->_x1 >= shapeA->_x1 && _shapes[j]->_x1 <= shapeA->_x2) inRange = true;
+      if(_shapes[j]->_x2 >= shapeA->_x1 && _shapes[j]->_x2 <= shapeA->_x2) inRange = true;
       if(!inRange) continue;
       addEdge(_shapes[j]->_node, shapeA->_node);
+      _edgeSize++;
     }
   }
 
   return true;
 }
 
-Node * Edge::getNeighbor(Node *n)
+Node* Edge::getNeighbor(Node *n)
 {
-	if ( node[0] == n ) return node[1];
-	if ( node[1] == n ) return node[0];
+	if ( _node[0] == n ) return _node[1];
+	if ( _node[1] == n ) return _node[0];
 
 	return 0;
 }
 
-void pattern::findcomponent(){
-	int node_num = _nodes.size();
-    int edge_number = _edges.size();
-    for( int i=0; i<node_num; i++)
-        _nodes[i]->color = 0;
-
-    for( int i=0; i < node_num; i++)
-    	if( _nodes[i]->color ==0){
-
-    		Component* my_comp;
-        	(my_comp->_nodes).push_back(_patt ->_nodes[i])
-    		_node[i]->color = 1;
-    		queue< Node* > my_queue;
-    		my_queue.push(_node[i])
-
-    		while( !my_queue.empty()){
-    			Node* popNode = my_queue.front();
-        		my_queue.pop();
-
-        		for( int i = 0 ; i < (popNode->_edge ).size() ; i++){
-
-            		Edge* tmpEdge = popNode->_edge[i];
-            		(my_comp->_edges).push_back(tmpEdge);
-            		Node* neighborNode = tmpEdge->getNeighbor(popNode);
-
-            		if( neighborNode->color == 0){
-            			(my_comp->_nodes).push_back(neighborNode);
-                		neighborNode->color = 1;
-                		my_queue.push(neighborNode);
-            		}
-        		}
-
-        	popNode->color = 2;
-    		}
-
-    _comps.push_back(my_comp);
-    cout << "There are " << _comps.size() << "components\n";
+void Pattern::findcomponent()
+{
+  int n_num=_nodes.size();
+  int e_num=_edges.size();
+  //init color
+  for(int i=0; i<n_num; ++i)
+    _nodes[i]->_traveled = false;
+  
+  for(int i=0; i<n_num; ++i){
+    if(_nodes[i]->_traveled == 0){
+      Component *comp = new Component;
+      dfs_visit(_nodes[i],comp);
+      _comps.push_back(comp);
     }
+  }
+}
+
+void Pattern::dfs_visit(Node* u,Component* comp)
+{
+  u->_traveled = true;
+  comp->_nodes.push_back(u);
+  for(int i=0; i<u->_edge.size(); ++i){
+    if(u->_edge[i]->getNeighbor(u)->_traveled == false)
+      dfs_visit(u->_edge[i]->getNeighbor(u), comp);
+  }
 }

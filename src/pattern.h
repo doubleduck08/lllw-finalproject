@@ -26,7 +26,7 @@ class Node
 {
 public:
   Node(Shape*);
-  ~Node();
+  ~Node(){};
   vector<Edge *> _edge;
 
   Shape* _shape;
@@ -40,7 +40,7 @@ class Edge
 {
 public:
   Edge(){};
-  ~Edge();
+  ~Edge(){};
   Node *getNeighbor(Node *n);
 
   Node* _node[2];
@@ -49,7 +49,7 @@ public:
 class Component
 {
 public:
-  Component();
+  Component(){};
   ~Component(){};
 
   vector<Node *> _nodes;
@@ -68,6 +68,7 @@ public:
   bool edgeInitailize();
   bool addEdge(Node *, Node *);
   void findcomponent();
+  void dfs_visit(Node*, Component*);
 
 
   int _alpha;
