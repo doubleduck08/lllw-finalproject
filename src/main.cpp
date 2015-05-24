@@ -9,12 +9,7 @@ int main(int argc, char **argv)
   pat.nodeInitailize();
   pat.edgeInitailize();
   pat.findcomponent();
-  /*for(int i = 0; i<pat._nodeSize; i++){
-    cout<<"#"<<i<<" "<<pat._shapesMap[i+1]->_id<<endl;
-  }
-  for(int i = 0; i<pat._edges.size(); ++i){
-    cout<<"#"<<i<<" "<<pat._edges[i]->_node[0]->_shape->_id
-                <<" "<<pat._edges[i]->_node[1]->_shape->_id<<endl;
-  }*/
+  pat.color_comps();
+  
   return 0;
 }

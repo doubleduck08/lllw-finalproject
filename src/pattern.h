@@ -1,6 +1,6 @@
 # ifndef PATTERN_H
 # define PATTERN_H
-
+# include <queue>
 # include <algorithm>
 # include <vector>
 # include <map>
@@ -25,6 +25,7 @@ public:
 class Node
 {
 public:
+  Node(){};
   Node(Shape*);
   ~Node(){};
   vector<Edge *> _edge;
@@ -41,7 +42,7 @@ class Edge
 public:
   Edge(){};
   ~Edge(){};
-  Node *getNeighbor(Node *n);
+  Node* getNeighbor(Node *n);
 
   Node* _node[2];
 };
@@ -51,7 +52,8 @@ class Component
 public:
   Component(){};
   ~Component(){};
-
+  
+  bool _colorable;
   vector<Node *> _nodes;
   vector<Edge *> _edges;
 };
@@ -69,7 +71,8 @@ public:
   bool addEdge(Node *, Node *);
   void findcomponent();
   void dfs_visit(Node*, Component*);
-
+  void color_comps();
+  void clear_traveled();
 
   int _alpha;
   int _beta;

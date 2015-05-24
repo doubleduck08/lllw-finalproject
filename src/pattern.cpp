@@ -86,15 +86,15 @@ bool Pattern::nodeInitailize()
 bool x1Comp( const Shape* A, const Shape* B ){ return (*A)._x1 < (*B)._x1; }
 bool Pattern::sortX1()
 {
-    sort(_shapes.begin(), _shapes.end(), x1Comp);
-    return true;
+  sort(_shapes.begin(), _shapes.end(), x1Comp);
+  return true;
 }
 
 bool y1Comp( const Shape* A, const Shape* B ){ return (*A)._y1 < (*B)._y1; }
 bool Pattern::sortY1()
 {
-    sort(_shapes.begin(), _shapes.end(), y1Comp);
-    return true;
+  sort(_shapes.begin(), _shapes.end(), y1Comp);
+  return true;
 }
 
 bool findRangeX(vector<Shape *> &shapes, double lower, double upper, int &left, int &right)
@@ -207,20 +207,22 @@ bool Pattern::edgeInitailize()
 
 Node* Edge::getNeighbor(Node *n)
 {
-	if ( _node[0] == n ) return _node[1];
-	if ( _node[1] == n ) return _node[0];
+  if ( _node[0] == n ) return _node[1];
+  if ( _node[1] == n ) return _node[0];
 
-	return 0;
+  return 0;
 }
 
 void Pattern::findcomponent()
 {
+  clear_traveled();
+
   int n_num=_nodes.size();
   int e_num=_edges.size();
   //init color
   for(int i=0; i<n_num; ++i)
     _nodes[i]->_traveled = false;
-  
+
   for(int i=0; i<n_num; ++i){
     if(_nodes[i]->_traveled == 0){
       Component *comp = new Component;
@@ -238,4 +240,60 @@ void Pattern::dfs_visit(Node* u,Component* comp)
     if(u->_edge[i]->getNeighbor(u)->_traveled == false)
       dfs_visit(u->_edge[i]->getNeighbor(u), comp);
   }
+}
+
+void be_uncolorable(Component* comp)
+{
+  vector<Node*>::iterator it_N = comp->_nodes.begin();
+  for ( ; it_N!=comp->_nodes.end() ; it_N++)
+  {
+    (*it_N)->_color=0;
+  }
+}
+
+void Pattern::color_comps()
+{
+  clear_traveled();
+  
+  Node *current, *neibor; //Node* a,b means one ptr, one var!!!!!!
+  queue<Node*> q;
+  vector<Component*>::iterator it_C;
+  vector<Edge*>::iterator it_E;
+  int color_pair = 1; //if color_pair=n , it provides color(2n) & color(2n-1)
+  for (it_C=_comps.begin() ; it_C!=_comps.end() ; it_C++)
+  {
+    (*it_C)->_colorable = true;
+    current=(*it_C)->_nodes[0];
+    current->_color = 2*color_pair-1;
+    current->_traveled = true;
+    q.push(current);
+    while (!q.empty()) {
+      current = q.front();
+      q.pop();
+      for (it_E=current->_edge.begin() ; 
+          it_E!=current->_edge.end() ; it_E++)
+      {
+        neibor = (*it_E)->getNeighbor(current);
+        if ( !(neibor->_traveled) ){
+          neibor->_color = (4*color_pair-1) - current->_color;
+          neibor->_traveled=true;
+          q.push(neibor);
+        }
+        else if (neibor->_color == current->_color) {
+          be_uncolorable(*it_C);
+          {queue<Node*> tmp; swap(q, tmp);}
+          //q.clean();
+          (*it_C)->_colorable=false;
+          break;
+        }
+      }
+    }
+    color_pair++;
+  }
+}
+
+void Pattern::clear_traveled()
+{
+  for(int i=0; i<_nodeSize; ++i)
+    _nodes[i]->_traveled = false;
 }
