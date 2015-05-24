@@ -32,9 +32,9 @@ public:
 
   Shape* _shape;
 
+  int _id; // the same with Shape
   int _color;
   bool _traveled;
-
 };
 
 class Edge
@@ -47,15 +47,60 @@ public:
   Node* _node[2];
 };
 
+class Window;
+struct WindowInComp
+{
+  Window *_window;
+  int _AreaA;
+  int _AreaB;
+};
+
 class Component
 {
 public:
   Component(){};
   ~Component(){};
-  
+
+  bool _id;
   bool _colorable;
   vector<Node *> _nodes;
-  vector<Edge *> _edges;
+
+  // bool _switchColor; // used by final solution
+  int _windowSize;
+  vector<WindowInComp *> _winInComp;
+};
+
+struct CompInWindows
+{
+  Component*_comp;
+  int _AreaA;
+  int _AreaB;
+};
+
+class Window
+{
+public:
+  Window(){};
+  ~Window(){};
+
+  // int _totalAreaA; // "total of (Switch ? Area A : Area B)"
+  // int _totalAreaB; // used by final solution
+  int _compSize;
+  vector<CompInWindows *> _compInWin;
+};
+
+class Example
+{
+public:
+  Example(){};
+  ~Example(){};
+  bool measureArea();
+
+  // gene
+  vector<bool> colorGene;
+  // character
+  vector<int> AreaA;
+  vector<int> AreaB;
 };
 
 class Pattern
@@ -69,10 +114,15 @@ public:
   bool sortY1();
   bool edgeInitailize();
   bool addEdge(Node *, Node *);
+
   void findcomponent();
   void dfs_visit(Node*, Component*);
   void color_comps();
   void clear_traveled();
+
+  bool setBox();
+  bool setWindows();
+  bool setGeneBase();
 
   int _alpha;
   int _beta;
@@ -82,9 +132,17 @@ public:
 
   int _nodeSize;
   int _edgeSize;
+  int _compSize;
   vector<Node *> _nodes; // all
   vector<Edge *> _edges; // all
   vector<Component *> _comps;
+
+  int _boxX;
+  int _boxY;
+  int _windowSize;
+  vector<Window*> _windows;
+
+  vector<Example*> _examples;
 };
 
 # endif

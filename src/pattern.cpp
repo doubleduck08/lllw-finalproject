@@ -64,8 +64,9 @@ bool Pattern::readfile( char *filename )
 
 Node::Node(Shape* s)
 {
+  _id = s->_id;
   _shape = s;
-  _color = 0;
+  _color = -1;
   _traveled = false;
 }
 
@@ -216,16 +217,16 @@ Node* Edge::getNeighbor(Node *n)
 void Pattern::findcomponent()
 {
   clear_traveled();
+  _compSize = 0;
 
   int n_num=_nodes.size();
   int e_num=_edges.size();
-  //init color
-  for(int i=0; i<n_num; ++i)
-    _nodes[i]->_traveled = false;
 
   for(int i=0; i<n_num; ++i){
     if(_nodes[i]->_traveled == 0){
       Component *comp = new Component;
+      _compSize++;
+      comp->_id = _compSize;
       dfs_visit(_nodes[i],comp);
       _comps.push_back(comp);
     }
@@ -247,35 +248,37 @@ void be_uncolorable(Component* comp)
   vector<Node*>::iterator it_N = comp->_nodes.begin();
   for ( ; it_N!=comp->_nodes.end() ; it_N++)
   {
-    (*it_N)->_color=0;
+    (*it_N)->_color=-1;
   }
 }
 
 void Pattern::color_comps()
 {
   clear_traveled();
-  
+
   Node *current, *neibor; //Node* a,b means one ptr, one var!!!!!!
   queue<Node*> q;
   vector<Component*>::iterator it_C;
   vector<Edge*>::iterator it_E;
-  int color_pair = 1; //if color_pair=n , it provides color(2n) & color(2n-1)
+  // int color_pair = 1; //if color_pair=n , it provides color(2n) & color(2n-1)
   for (it_C=_comps.begin() ; it_C!=_comps.end() ; it_C++)
   {
     (*it_C)->_colorable = true;
     current=(*it_C)->_nodes[0];
-    current->_color = 2*color_pair-1;
+    // current->_color = 2*color_pair-1;
+    current->_color = 0;
     current->_traveled = true;
     q.push(current);
     while (!q.empty()) {
       current = q.front();
       q.pop();
-      for (it_E=current->_edge.begin() ; 
+      for (it_E=current->_edge.begin() ;
           it_E!=current->_edge.end() ; it_E++)
       {
         neibor = (*it_E)->getNeighbor(current);
         if ( !(neibor->_traveled) ){
-          neibor->_color = (4*color_pair-1) - current->_color;
+          // neibor->_color = (4*color_pair-1) - current->_color;
+          neibor->_color = 1 - current->_color;
           neibor->_traveled=true;
           q.push(neibor);
         }
@@ -288,7 +291,7 @@ void Pattern::color_comps()
         }
       }
     }
-    color_pair++;
+    // color_pair++;
   }
 }
 
@@ -296,4 +299,25 @@ void Pattern::clear_traveled()
 {
   for(int i=0; i<_nodeSize; ++i)
     _nodes[i]->_traveled = false;
+}
+
+bool Pattern::setBox()
+{
+  return true;
+}
+
+bool Pattern::setWindows()
+{
+  //
+  return true;
+}
+
+bool setGeneBase()
+{
+  return true;
+}
+
+bool Example::measureArea()
+{
+  return true;
 }

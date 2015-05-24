@@ -10,6 +10,9 @@ int main(int argc, char **argv)
   pat.edgeInitailize();
   pat.findcomponent();
   pat.color_comps();
-  
+
+  // for(int i = 0 ; i < pat._compSize ; i++)
+  //   cout << "#" << i+1 <<" "<<pat._comps[i]->_colorable << endl;
+
   return 0;
 }
