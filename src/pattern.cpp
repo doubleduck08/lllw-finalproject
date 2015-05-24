@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # include "pattern.h"
 using namespace std;
 
@@ -205,17 +204,12 @@ bool Pattern::edgeInitailize()
   return true;
 }
 
-=======
-#include "pattern.h"
-#include <iostream>
-using namespace std;
-
 Node * Edge::getNeighbor(Node *n)
 {
 	if ( node[0] == n ) return node[1];
 	if ( node[1] == n ) return node[0];
 
-	return 0;	
+	return 0;
 }
 
 void pattern::findcomponent(){
@@ -236,7 +230,7 @@ void pattern::findcomponent(){
     		while( !my_queue.empty()){
     			Node* popNode = my_queue.front();
         		my_queue.pop();
-        		
+
         		for( int i = 0 ; i < (popNode->_edge ).size() ; i++){
 
             		Edge* tmpEdge = popNode->_edge[i];
@@ -248,13 +242,12 @@ void pattern::findcomponent(){
                 		neighborNode->color = 1;
                 		my_queue.push(neighborNode);
             		}
-        		} 
+        		}
 
         	popNode->color = 2;
     		}
 
     _comps.push_back(my_comp);
     cout << "There are " << _comps.size() << "components\n";
-    }   	
+    }
 }
->>>>>>> findcomponent
