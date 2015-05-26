@@ -303,6 +303,36 @@ void Pattern::clear_traveled()
 
 bool Pattern::setBox()
 {
+  Component *comp;
+  Node *node;
+  bool firstNode = true;
+  int nodeSizeInComp;
+  for(int i = 0 ; i < _compSize ; i++)
+  {
+    comp = _comps[i];
+    if(comp->_colorable == false) continue;
+
+    nodeSizeInComp = comp->_nodes.size();
+    for(int j = 0 ; j < nodeSizeInComp ; j++)
+    {
+      node = comp->_nodes[j];
+      if(firstNode)
+      {
+        _boxX1 = node->_shape->_x1;
+        _boxX2 = node->_shape->_x2;
+        _boxY1 = node->_shape->_y1;
+        _boxY2 = node->_shape->_y2;
+        firstNode = false;
+      }
+      else
+      {
+        if(_boxX1 > node->_shape->_x1) _boxX1 = node->_shape->_x1;
+        if(_boxX2 < node->_shape->_x2) _boxX2 = node->_shape->_x2;
+        if(_boxY1 > node->_shape->_y1) _boxY1 = node->_shape->_y1;
+        if(_boxY2 < node->_shape->_y2) _boxY2 = node->_shape->_y2;
+      }
+    }
+  }
   return true;
 }
 
@@ -312,7 +342,7 @@ bool Pattern::setWindows()
   return true;
 }
 
-bool setGeneBase()
+bool Pattern::setGeneBase()
 {
   return true;
 }

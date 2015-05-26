@@ -137,8 +137,10 @@ public:
   vector<Edge *> _edges; // all
   vector<Component *> _comps;
 
-  int _boxX;
-  int _boxY;
+  int _boxX1;
+  int _boxX2;
+  int _boxY1;
+  int _boxY2;
   int _windowSize;
   vector<Window*> _windows;
 

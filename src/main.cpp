@@ -8,9 +8,11 @@ int main(int argc, char **argv)
   pat.readfile( argv[1] );
   pat.nodeInitailize();
   pat.edgeInitailize();
+
   pat.findcomponent();
   pat.color_comps();
 
+  pat.setBox();
   // for(int i = 0 ; i < pat._compSize ; i++)
   //   cout << "#" << i+1 <<" "<<pat._comps[i]->_colorable << endl;
 
