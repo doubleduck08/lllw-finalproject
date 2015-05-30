@@ -80,9 +80,14 @@ struct CompInWindows
 class Window
 {
 public:
-  Window(){};
+  Window(int, int, int, int, int);
   ~Window(){};
 
+  int _id;
+  int _x1;
+  int _x2;
+  int _y1;
+  int _y2;
   // int _totalAreaA; // "total of (Switch ? Area A : Area B)"
   // int _totalAreaB; // used by final solution
   int _compSize;

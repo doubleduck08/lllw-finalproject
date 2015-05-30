@@ -336,9 +336,47 @@ bool Pattern::setBox()
   return true;
 }
 
+Window::Window(int id, int x1, int x2, int y1, int y2)
+{
+  _id = id;
+  _x1 = x1;
+  _x2 = x2;
+  _y1 = y1;
+  _y2 = y2;
+}
+
+
 bool Pattern::setWindows()
 {
-  //
+  int x_count = 0, y_count = 0;
+  if( (_boxX2 - _boxX1)%_omega != 0 ) x_count += 1;
+  if( (_boxY2 - _boxY1)%_omega != 0 ) y_count += 1;
+  x_count += (_boxX2 - _boxX1) / _omega;
+  y_count += (_boxY2 - _boxY1) / _omega;
+
+  int x1, y1;
+  _windowSize = 0;
+  Window* win;
+  for(int j = 0 ; j < y_count ; j++)
+  {
+    if(j == y_count-1)
+      y1 = _boxY2 - _omega;
+    else
+      y1 = _boxY1 + _omega * j;
+
+    for(int i = 0 ; i < x_count ; i++)
+    {
+      if(i == x_count-1)
+        x1 = _boxX2 - _omega;
+      else
+        x1 = _boxX1 + _omega * i;
+
+      _windowSize++;
+      win = new Window(_windowSize, x1, x1+_omega, y1, y1+_omega);
+      _windows.push_back(win);
+    }
+  }
+
   return true;
 }
 
