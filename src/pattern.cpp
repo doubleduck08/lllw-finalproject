@@ -1,4 +1,5 @@
-# include "pattern.h"
+#include "pattern.h"
+#include <time.h>
 using namespace std;
 
 Shape::Shape(int id, int x1, int x2, int y1, int y2)
@@ -323,4 +324,19 @@ bool Example::measureArea()
 }
 
 void mutation( string& a, string& b, string& c, string& d ){
- 
+  mut_function(a);
+  mut_function(b);
+  mut_funvtion(c);
+  mut_function(d);
+}
+
+void mut_function( string& gene ){
+  int mut_num = srand(0)%10;
+  int mut_pos;
+
+  for( int i = 0; i < mut_num; i++){
+    mut_pos = srand(0)%(gene.length());
+    gene[mut_pos] = srand(0)%1;
+  }
+}
+  
