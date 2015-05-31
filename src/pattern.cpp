@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # include "pattern.h"
 using namespace std;
 
@@ -472,16 +471,16 @@ double Pattern::getScore(const Example &exp)
 void Pattern::compulate(Example ori1, Example ori2)
 {
   int compuRatio = colorCompsNum / 10 + 1;
-  
+
   bool tmp[colorCompsNum];
   memset(tmp, 0, sizeof(bool) * colorCompsNum);
-  
+
   for(int i=0; i < compuRatio; ++i){
     tmp[i] = ori1.colorGene[i];
     ori1.colorGene[i] = ori2.colorGene[i];
     ori2.colorGene[i] = tmp[i];
   }
-  
+
 }
 
 Example* Pattern::findBest(Eample* candidate)
@@ -494,11 +493,11 @@ Example* Pattern::findBest(Eample* candidate)
   double ratio[CandNum];
   memset(ratio, 0, sizeof(double) * CandNum)
 
-  for(int i=0; i < CandNum; ++i){
-    score[i] = getScore(candidate[i]);
-    sum += (1 / score[i]);
-  }
-  
+    for(int i=0; i < CandNum; ++i){
+      score[i] = getScore(candidate[i]);
+      sum += (1 / score[i]);
+    }
+
   for(int i=0; i < CandNum; ++i){
     ratio[i] = (score[i] / sum);
     if(i > 0)
@@ -545,4 +544,11 @@ void mut_function( Example& exp ){
     exp.colorGene[mut_pos] = (exp.colorGene[mut_pos]+1) % 2; //XOR
   }
 }
-  
+
+
+void gen_gene (Example& exa) 
+{
+  srand(time(0));
+  for (int j=0 ; j<Pattern.color_comp.size() ; j++)
+    exa.colorGene.push_back(rand()%2);
+}
