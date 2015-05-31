@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # include "pattern.h"
 using namespace std;
 
@@ -529,3 +530,19 @@ int Pattern::drawExample(Example* candidate, const double* ratio){
   return selete;
 }
 
+void mutation( Example *exp ){
+  for( int i = 0; i < exp.length(); ++i ){
+    mut_function(exp[i]);
+  }
+}
+
+void mut_function( Example& exp ){
+  int mut_num = srand(time(0)) % MUTNUM;  
+  int mut_pos;
+
+  for( int i = 0; i < mut_num; i++){
+    mut_pos = srand(time(0)) % (colorCompsNum);
+    exp.colorGene[mut_pos] = (exp.colorGene[mut_pos]+1) % 2; //XOR
+  }
+}
+  
