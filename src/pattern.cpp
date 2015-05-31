@@ -323,8 +323,8 @@ bool Example::measureArea()
   return true;
 }
 
-void mutation( vector<Example> &exp ){
-  for( int i = 0; i < exp.size(); i++ ){
+void mutation( Example *exp ){
+  for( int i = 0; i < exp.length(); ++i ){
     mut_function(exp[i]);
   }
 }
