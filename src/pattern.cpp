@@ -336,14 +336,118 @@ bool Pattern::setBox()
   return true;
 }
 
+Window::Window(int id, int x1, int x2, int y1, int y2)
+{
+  _id = id;
+  _x1 = x1;
+  _x2 = x2;
+  _y1 = y1;
+  _y2 = y2;
+}
+
+
 bool Pattern::setWindows()
 {
-  //
+  int x_count = 0, y_count = 0;
+  if( (_boxX2 - _boxX1)%_omega != 0 ) x_count += 1;
+  if( (_boxY2 - _boxY1)%_omega != 0 ) y_count += 1;
+  x_count += (_boxX2 - _boxX1) / _omega;
+  y_count += (_boxY2 - _boxY1) / _omega;
+
+  int x1, y1;
+  _windowSize = 0;
+  Window* win;
+  for(int j = 0 ; j < y_count ; j++)
+  {
+    if(j == y_count-1)
+      y1 = _boxY2 - _omega;
+    else
+      y1 = _boxY1 + _omega * j;
+
+    for(int i = 0 ; i < x_count ; i++)
+    {
+      if(i == x_count-1)
+        x1 = _boxX2 - _omega;
+      else
+        x1 = _boxX1 + _omega * i;
+
+      _windowSize++;
+      win = new Window(_windowSize, x1, x1+_omega, y1, y1+_omega);
+      _windows.push_back(win);
+    }
+  }
   return true;
 }
 
 bool Pattern::setGeneBase()
 {
+  Component* comp;
+  Shape* shape;
+  Window* win;
+  int n, color, win_id;
+
+  int x_count = 0, y_count = 0;
+  if( (_boxX2 - _boxX1)%_omega != 0 ) x_count += 1;
+  if( (_boxY2 - _boxY1)%_omega != 0 ) y_count += 1;
+  x_count += (_boxX2 - _boxX1) / _omega;
+  y_count += (_boxY2 - _boxY1) / _omega;
+
+  for(int i = 0 ; i < _compSize ; i++)
+  {
+    comp = _comps[i];
+    if(comp->_colorable == false) continue;
+
+    n = comp->_nodes.size();
+    for(int j = 0 ; j < n ; j++)
+    {
+      shape = comp->_nodes[j]->_shape;
+      color = comp->_nodes[j]->_color;
+      win_id = (shape->_y1 - _boxY1) / _omega;
+      win_id = win_id * _omega + (shape->_x1 - _boxX1) / _omega + 1;
+
+      int i = 0, j = 0, x, y;
+      while(i < y_count)
+      {
+        j = 0;
+        while(j < x_count)
+        {
+          win = _windows[ win_id + i * x_count + j -1 ];
+
+          if( shape->_x2 <= win->_x2 && shape->_x1 >= win->_x1 ) x = shape->_x2 - shape->_x1;
+          else if( shape->_x1 < win->_x2 && shape->_x2 > win->_x2 ) x = win->_x2 - shape->_x1;
+          else if( shape->_x2 > win->_x1 && shape->_x1 < win->_x1 ) x = shape->_x2 - win->_x1;
+          else if( shape->_x1 < win->_x1 && shape->_x2 > win->_x2) x = _omega;
+          else x = 0;
+
+          if( shape->_y2 <= win->_y2 && shape->_y1 >= win->_y1 ) y = shape->_y2 - shape->_y1;
+          else if( shape->_y1 < win->_y2 && shape->_y2 > win->_y2 ) y = win->_y2 - shape->_y1;
+          else if( shape->_y2 > win->_y1 && shape->_y1 < win->_y1 ) y = shape->_y2 - win->_y1;
+          else if( shape->_y1 < win->_y1 && shape->_y2 > win->_y2) y = _omega;
+          else y = 0;
+
+          if( x * y > 0 )
+          {
+            WindowInComp* wic = new WindowInComp;
+            wic->_window = win;
+            wic->_areaA  = x * y * ( 1 - color );
+            wic->_areaB  = x * y * color;
+            comp->_winInComp.push_back(wic);
+
+            CompInWindows* ciw = new CompInWindows;
+            ciw->_comp  = comp;
+            wic->_areaA = x * y * ( 1 - color );
+            wic->_areaB = x * y * color;
+            win->_compInWin.push_back(ciw);
+          }
+
+          if(x == 0) break;
+          else j++;
+        }
+        if(y == 0) break;
+        else i++;
+      }
+    }
+  }
   return true;
 }
 

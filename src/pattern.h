@@ -51,8 +51,8 @@ class Window;
 struct WindowInComp
 {
   Window *_window;
-  int _AreaA;
-  int _AreaB;
+  int _areaA;
+  int _areaB;
 };
 
 class Component
@@ -61,31 +61,35 @@ public:
   Component(){};
   ~Component(){};
 
-  bool _id;
+  int _id;
   bool _colorable;
   vector<Node *> _nodes;
-
   // bool _switchColor; // used by final solution
-  int _windowSize;
+  // int _windowSize;
   vector<WindowInComp *> _winInComp;
 };
 
 struct CompInWindows
 {
   Component*_comp;
-  int _AreaA;
-  int _AreaB;
+  int _areaA;
+  int _areaB;
 };
 
 class Window
 {
 public:
-  Window(){};
+  Window(int, int, int, int, int);
   ~Window(){};
 
+  int _id;
+  int _x1;
+  int _x2;
+  int _y1;
+  int _y2;
   // int _totalAreaA; // "total of (Switch ? Area A : Area B)"
   // int _totalAreaB; // used by final solution
-  int _compSize;
+  // int _compSize;
   vector<CompInWindows *> _compInWin;
 };
 
