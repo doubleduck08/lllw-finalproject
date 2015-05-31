@@ -321,3 +321,6 @@ bool Example::measureArea()
 {
   return true;
 }
+
+void mutation( string& a, string& b, string& c, string& d ){
+ 
