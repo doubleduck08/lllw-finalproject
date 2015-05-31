@@ -1,5 +1,6 @@
 # include "pattern.h"
 using namespace std;
+#define MUT_NUM 3
 
 Shape::Shape(int id, int x1, int x2, int y1, int y2)
 {
@@ -293,6 +294,14 @@ void Pattern::color_comps()
     }
     // color_pair++;
   }
+  _colorCompsSize = 0;
+  for(int i=0; i < _compSize; ++i){
+    if(_comps[i]->_colorable){
+      ++_colorCompsSize;
+      _comps[i]->_geneId = _colorCompsSize;
+      _colorComps.push_back(_comps[i]);
+    }
+  }
 }
 
 void Pattern::clear_traveled()
@@ -451,47 +460,108 @@ bool Pattern::setGeneBase()
   return true;
 }
 
-bool Example::measureArea()
+bool Pattern::measureArea(Example &exp)
 {
+  Window* win;
+  Component* comp;
+  int n, areaA, areaB;
+
+  for(int i=0; i < _windowSize; ++i){
+    win = _windows[i];
+    n = win->_compInWin.size();
+    areaA = areaB = 0; 
+    
+    for(int j=0; j < n ; ++j){
+      comp = win->_compInWin[j]->_comp;
+      areaA += win->_compInWin[j]->_areaA * (1 - exp._colorGene[comp->_geneId -1]);
+      areaB += win->_compInWin[j]->_areaB * exp._colorGene[comp->_geneId -1];
+    }
+    exp._areaA.push_back(areaA);
+    exp._areaB.push_back(areaB);  
+  }
   return true;
+}
+
+void Pattern::genGene(Example& exp) 
+{
+  srand(time(0));
+  for (int j=0 ; j < _colorCompsSize; j++)
+    exp._colorGene.push_back(rand()%2);
+}
+
+void Pattern::mut_function(Example& exp)
+{
+  srand(time(0));
+  int mut_num = rand() % MUT_NUM;  
+  int mut_pos;
+
+  for( int i = 0; i < mut_num; i++){
+    mut_pos = rand() % (_colorCompsSize);
+    exp._colorGene[mut_pos] = (exp._colorGene[mut_pos]+1) % 2; //XOR
+  }
+}
+
+void Pattern::mutation(Example *exp)
+{
+  int len = sizeof(exp) / sizeof(*exp);
+  for( int i = 0; i < len; ++i ){
+    mut_function(exp[i]);
+  }
+}
+
+int Pattern::drawExample(Example* candidate, const double *ratio)
+{
+  srand(time(0));
+  int CandNum = sizeof(candidate) / sizeof(*candidate);
+  double randNum = rand() / RAND_MAX;
+  int select=0;
+  for(; select < CandNum; ++select){
+    if(randNum < ratio[select])
+      break;
+  }
+  return select;
+}
+
+void Pattern::compulate(Example &ori1, Example &ori2)
+{
+  int compuRatio = _colorCompsSize / 10 + 1;
+
+  bool tmp[_colorCompsSize];
+  memset(tmp, 0, sizeof(bool) * _colorCompsSize);
+
+  for(int i=0; i < compuRatio; ++i){
+    tmp[i] = ori1._colorGene[i];
+    ori1._colorGene[i] = ori2._colorGene[i];
+    ori2._colorGene[i] = tmp[i];
+  }
 }
 
 double Pattern::getScore(const Example &exp)
 {
-  int compsize = exp.AreaA.size();
+  int expCompSize = exp._areaA.size();
   int score = 0;
-  for(int i=0; i < compsize; ++i){
-    int sub = exp.AreaA[i] - exp.AreaB[i];
+  for(int i=0; i < expCompSize; ++i){
+    int sub = exp._areaA[i] - exp._areaB[i];
     score += sub > 0 ? sub : -sub;
   }
 
   return score / (_omega*_omega);
 }
 
-void Pattern::compulate(Example ori1, Example ori2)
-{
-  int compuRatio = colorCompsNum / 10 + 1;
-
-  bool tmp[colorCompsNum];
-  memset(tmp, 0, sizeof(bool) * colorCompsNum);
-
-  for(int i=0; i < compuRatio; ++i){
-    tmp[i] = ori1.colorGene[i];
-    ori1.colorGene[i] = ori2.colorGene[i];
-    ori2.colorGene[i] = tmp[i];
-  }
-
-}
-
-Example* Pattern::findBest(Eample* candidate)
+Example* Pattern::findbest(Example* candidate)
 {
   //Example candidate[CandNum];
-  int CandNum = candidate.length();
-  Example[CandNum/2] seleteExp;
+  int CandNum = sizeof(candidate) / sizeof(*candidate);
+  Example* seleteExp = new Example [CandNum/2];
   double score[CandNum];
   double sum = 0;
   double ratio[CandNum];
-  memset(ratio, 0, sizeof(double) * CandNum)
+  memset(ratio, 0, sizeof(double) * CandNum);
+  
+  //
+  for(int i=0; i < CandNum; ++i){
+    measureArea(candidate[i]);
+  }
 
     for(int i=0; i < CandNum; ++i){
       score[i] = getScore(candidate[i]);
@@ -505,12 +575,12 @@ Example* Pattern::findBest(Eample* candidate)
   }
 
   for(int i=0; i < CandNum; ++i){
-    seleteExp[i] = candidate[drawExample(candidate, ration)])
+    seleteExp[i] = candidate[drawExample(candidate, ratio)];
   }
 
   //compulate
   for(int i=0; i < CandNum / 2; i+=2){
-    compulate(seleteExp[i], seleteExp[i+1])
+    compulate(seleteExp[i], seleteExp[i+1]);
   }
 
   //mutation
@@ -519,36 +589,3 @@ Example* Pattern::findBest(Eample* candidate)
   return seleteExp;
 }
 
-int Pattern::drawExample(Example* candidate, const double* ratio){
-  double randNum = srand(time(0)) / RAND_MAX;
-  int selete=0;
-  for(; flag < CandNum; ++flag){
-    if(randNum < ratio[i])
-      break;
-  }
-  return selete;
-}
-
-void mutation( Example *exp ){
-  for( int i = 0; i < exp.length(); ++i ){
-    mut_function(exp[i]);
-  }
-}
-
-void mut_function( Example& exp ){
-  int mut_num = srand(time(0)) % MUTNUM;  
-  int mut_pos;
-
-  for( int i = 0; i < mut_num; i++){
-    mut_pos = srand(time(0)) % (colorCompsNum);
-    exp.colorGene[mut_pos] = (exp.colorGene[mut_pos]+1) % 2; //XOR
-  }
-}
-
-
-void gen_gene (Example& exa) 
-{
-  srand(time(0));
-  for (int j=0 ; j<Pattern.color_comp.size() ; j++)
-    exa.colorGene.push_back(rand()%2);
-}
