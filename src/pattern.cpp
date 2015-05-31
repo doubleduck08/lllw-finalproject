@@ -323,20 +323,20 @@ bool Example::measureArea()
   return true;
 }
 
-void mutation( string& a, string& b, string& c, string& d ){
+void mutation( Example& a, Example& b, Example& c, Example& d ){
   mut_function(a);
   mut_function(b);
   mut_funvtion(c);
   mut_function(d);
 }
 
-void mut_function( string& gene ){
-  int mut_num = srand(0)%10;
+void mut_function( Example& exp ){
+  int mut_num = srand(time(0)) % MUTNUM;  
   int mut_pos;
 
   for( int i = 0; i < mut_num; i++){
-    mut_pos = srand(0)%(gene.length());
-    gene[mut_pos] = srand(0)%1;
+    mut_pos = srand(time(0)) % (colorCompsNum);
+    exp.colorGene[mut_pos] = (exp.colorGene[mut_pos]+1) % 2; //XOR
   }
 }
   
