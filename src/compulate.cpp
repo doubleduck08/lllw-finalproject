@@ -13,16 +13,17 @@ void Pattern::compulate(Example ori1, Example ori2)
   
 }
 
-void Pattern::findBest()
+Example* Pattern::findBest(Eample* candidate)
 {
-  Example candidate[CandNum];
+  //Example candidate[CandNum];
+  int CandNum = candidate.length();
+  Example[CandNum/2] seleteExp;
   double score[CandNum];
   double sum = 0;
-  double ratio[CandNum] = {0.0, 0.0, 0.0, 0.0};
-  vector<Example> seleteExp;
+  double ratio[CandNum];
+  memset(ratio, 0, sizeof(double) * CandNum)
 
   for(int i=0; i < CandNum; ++i){
-    gen_Gene(candidate[i]);
     score[i] = getScore(candidate[i]);
     sum += (1 / score[i]);
   }
@@ -34,7 +35,7 @@ void Pattern::findBest()
   }
 
   for(int i=0; i < CandNum; ++i){
-    seleteExp.push_back(candidate[drawExample(candidate, ration)])
+    seleteExp[i] = candidate[drawExample(candidate, ration)])
   }
 
   //compulate
