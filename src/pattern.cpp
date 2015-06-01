@@ -393,7 +393,7 @@ bool Pattern::setGeneBase()
   Component* comp;
   Shape* shape;
   Window* win;
-  int n, color, win_id;
+  int n, color, win_x_pos, win_y_pos, win_id;
 
   int x_count = 0, y_count = 0;
   if( (_boxX2 - _boxX1)%_omega != 0 ) x_count += 1;
@@ -411,14 +411,15 @@ bool Pattern::setGeneBase()
     {
       shape = comp->_nodes[j]->_shape;
       color = comp->_nodes[j]->_color;
-      win_id = (shape->_y1 - _boxY1) / _omega;
-      win_id = win_id * _omega + (shape->_x1 - _boxX1) / _omega + 1;
+      win_x_pos = (shape->_x1 - _boxX1) / _omega;
+      win_y_pos = (shape->_y1 - _boxY1) / _omega;
+      win_id    = win_y_pos * x_count + win_x_pos + 1;
 
       int i = 0, j = 0, x, y;
-      while(i < y_count)
+      while(i < y_count - win_y_pos)
       {
         j = 0;
-        while(j < x_count)
+        while(j < x_count - win_x_pos)
         {
           win = _windows[ win_id + i * x_count + j -1 ];
 
@@ -469,20 +470,20 @@ bool Pattern::measureArea(Example &exp)
   for(int i=0; i < _windowSize; ++i){
     win = _windows[i];
     n = win->_compInWin.size();
-    areaA = areaB = 0; 
-    
+    areaA = areaB = 0;
+
     for(int j=0; j < n ; ++j){
       comp = win->_compInWin[j]->_comp;
       areaA += win->_compInWin[j]->_areaA * (1 - exp._colorGene[comp->_geneId -1]);
       areaB += win->_compInWin[j]->_areaB * exp._colorGene[comp->_geneId -1];
     }
     exp._areaA.push_back(areaA);
-    exp._areaB.push_back(areaB);  
+    exp._areaB.push_back(areaB);
   }
   return true;
 }
 
-void Pattern::genGene(Example& exp) 
+void Pattern::genGene(Example& exp)
 {
   srand(time(0));
   for (int j=0 ; j < _colorCompsSize; j++)
@@ -492,7 +493,7 @@ void Pattern::genGene(Example& exp)
 void Pattern::mut_function(Example& exp)
 {
   srand(time(0));
-  int mut_num = rand() % MUT_NUM;  
+  int mut_num = rand() % MUT_NUM;
   int mut_pos;
 
   for( int i = 0; i < mut_num; i++){
@@ -557,7 +558,7 @@ Example* Pattern::findbest(Example* candidate)
   double sum = 0;
   double ratio[CandNum];
   memset(ratio, 0, sizeof(double) * CandNum);
-  
+
   //
   for(int i=0; i < CandNum; ++i){
     measureArea(candidate[i]);
