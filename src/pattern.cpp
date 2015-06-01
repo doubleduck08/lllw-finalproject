@@ -401,16 +401,16 @@ bool Pattern::setGeneBase()
   x_count += (_boxX2 - _boxX1) / _omega;
   y_count += (_boxY2 - _boxY1) / _omega;
 
-  for(int i = 0 ; i < _compSize ; i++)
+  for(int ii = 0 ; ii < _compSize ; ii++)
   {
-    comp = _comps[i];
+    comp = _comps[ii];
     if(comp->_colorable == false) continue;
 
     n = comp->_nodes.size();
-    for(int j = 0 ; j < n ; j++)
+    for(int jj = 0 ; jj < n ; jj++)
     {
-      shape = comp->_nodes[j]->_shape;
-      color = comp->_nodes[j]->_color;
+      shape = comp->_nodes[jj]->_shape;
+      color = comp->_nodes[jj]->_color;
       win_x_pos = (shape->_x1 - _boxX1) / _omega;
       win_y_pos = (shape->_y1 - _boxY1) / _omega;
       win_id    = win_y_pos * x_count + win_x_pos + 1;
