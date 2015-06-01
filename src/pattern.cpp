@@ -384,7 +384,7 @@ bool Pattern::setGeneBase()
   Component* comp;
   Shape* shape;
   Window* win;
-  int n, color, win_id;
+  int n, color, win_x_pos, win_y_pos, win_id;
 
   int x_count = 0, y_count = 0;
   if( (_boxX2 - _boxX1)%_omega != 0 ) x_count += 1;
@@ -402,14 +402,15 @@ bool Pattern::setGeneBase()
     {
       shape = comp->_nodes[j]->_shape;
       color = comp->_nodes[j]->_color;
-      win_id = (shape->_y1 - _boxY1) / _omega;
-      win_id = win_id * _omega + (shape->_x1 - _boxX1) / _omega + 1;
+      win_x_pos = (shape->_x1 - _boxX1) / _omega;
+      win_y_pos = (shape->_y1 - _boxY1) / _omega;
+      win_id    = win_y_pos * x_count + win_x_pos + 1;
 
       int i = 0, j = 0, x, y;
-      while(i < y_count)
+      while(i < y_count - win_y_pos)
       {
         j = 0;
-        while(j < x_count)
+        while(j < x_count - win_x_pos)
         {
           win = _windows[ win_id + i * x_count + j -1 ];
 
