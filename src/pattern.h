@@ -135,7 +135,8 @@ public:
   int _compSize;
   vector<Node *> _nodes; // all
   vector<Edge *> _edges; // all
-  vector<Component *> _comps;
+  vector<Component *> _comps;  
+  vector<Component *> color_comps;  
 
   int _boxX1;
   int _boxX2;

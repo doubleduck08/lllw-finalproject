@@ -293,6 +293,9 @@ void Pattern::color_comps()
     }
     // color_pair++;
   }
+  for (it_C=_comps.begin() ; it_C!=_comps.end() ; it_C++) {
+     if ((*it_C)->_colorable) color_comps.push_back((*it_C));
+  }
 }
 
 void Pattern::clear_traveled()
