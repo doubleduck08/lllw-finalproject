@@ -4,11 +4,8 @@
 #include "pattern.h"
 using namespace std;
 
-string example[8];
-
-void genexample () {
+void gen_gene (Example& exa) {
     srand(time(0));
-    for (int i=0 ; i<8 ; i++)
-       for (int j=0 ; j<Pattern._comp.size() ; j++)
-           example[i].append('0'+rand()%2);
+    for (int j=0 ; j<Pattern.color_comp.size() ; j++)
+        exa.colorGene.push_back(rand()%2);
 }
