@@ -46,3 +46,6 @@ void color_comp(vector <Components*> &_comp)
        color_pair++;
     }
 }
+
+
+
