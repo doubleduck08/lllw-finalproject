@@ -447,8 +447,8 @@ bool Pattern::setGeneBase()
 
             CompInWindows* ciw = new CompInWindows;
             ciw->_comp  = comp;
-            wic->_areaA = x * y * ( 1 - color );
-            wic->_areaB = x * y * color;
+            ciw->_areaA = x * y * ( 1 - color );
+            ciw->_areaB = x * y * color;
             win->_compInWin.push_back(ciw);
           }
 
