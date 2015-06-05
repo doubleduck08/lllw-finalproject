@@ -497,9 +497,11 @@ bool Pattern::measureArea(Example &exp)
 
 void Pattern::genGene(Example& exp)
 {
-  srand(time(0));
-  for (int j=0 ; j < _colorCompsSize; j++)
-    exp._colorGene.push_back(rand()%2);
+  for (int j=0 ; j < _colorCompsSize; j++){
+    int tmp = rand();
+    //cout << tmp<< " ===";
+    exp._colorGene.push_back(tmp%2);
+  }
 }
 
 void Pattern::mut_function(Example& exp)
