@@ -31,7 +31,7 @@ bool Pattern::readfile( char *filename )
   int id=0;
   int x1, x2, y1, y2;
   while( getline(fin, buf) ){
-    if(buf.size()==0)
+    if(buf.size() < 3)
       continue;
     ss.str("");
     ss.clear();
@@ -51,6 +51,8 @@ bool Pattern::readfile( char *filename )
         for(int i=0; i<6; ++i)
           ss >> ch;
         ss >> _omega;
+        break;
+      case '\r':
         break;
       default:
         ss >> x1 >> ch >> y1 >> ch >> x2 >> ch >> y2;
@@ -474,8 +476,14 @@ bool Pattern::measureArea(Example &exp)
 
     for(int j=0; j < n ; ++j){
       comp = win->_compInWin[j]->_comp;
-      areaA += win->_compInWin[j]->_areaA * (1 - exp._colorGene[comp->_geneId -1]);
-      areaB += win->_compInWin[j]->_areaB * exp._colorGene[comp->_geneId -1];
+      if(exp._colorGene[comp->_geneId - 1]){
+        areaA += win->_compInWin[j]->_areaB;
+        areaB += win->_compInWin[j]->_areaA;
+      }
+      else{
+        areaA += win->_compInWin[j]->_areaA;
+        areaB += win->_compInWin[j]->_areaB;
+      }
     }
     exp._areaA.push_back(areaA);
     exp._areaB.push_back(areaB);
@@ -552,7 +560,7 @@ double Pattern::getScore(const Example &exp)
 Example* Pattern::findbest(Example* candidate)
 {
   //Example candidate[CandNum];
-  int CandNum = sizeof(candidate) / sizeof(*candidate);
+  int CandNum = 8;//sizeof(candidate) / sizeof(*candidate);
   Example* seleteExp = new Example [CandNum/2];
   double score[CandNum];
   double sum = 0;

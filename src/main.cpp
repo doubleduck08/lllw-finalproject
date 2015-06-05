@@ -29,11 +29,11 @@ int main(int argc, char **argv)
   for(int i=0; i < ITER_NUM; ++i){
     Example* seleteExp = pat.findbest(initExp); // return INIT_CAND_NUM / 2 number of Example
     
-    for(int i=0; i < INIT_CAND_NUM; ++i){
-      if(i < INIT_CAND_NUM/2)
-        tmpExp[i] = seleteExp[i];
+    for(int j=0; j < INIT_CAND_NUM; ++j){
+      if(j < INIT_CAND_NUM/2)
+        tmpExp[j] = seleteExp[j];
       else
-        pat.genGene(tmpExp[i]);
+        pat.genGene(tmpExp[j]);
     }
   }
 
