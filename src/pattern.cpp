@@ -1,4 +1,5 @@
 # include "pattern.h"
+# include <iostream>
 using namespace std;
 #define MUT_NUM 3
 
@@ -468,6 +469,9 @@ bool Pattern::measureArea(Example &exp)
   Window* win;
   Component* comp;
   int n, areaA, areaB;
+  
+  exp._areaA.clear();
+  exp._areaB.clear();
 
   for(int i=0; i < _windowSize; ++i){
     win = _windows[i];
@@ -512,7 +516,8 @@ void Pattern::mut_function(Example& exp)
 
 void Pattern::mutation(Example *exp)
 {
-  int len = sizeof(exp) / sizeof(*exp);
+  //int len = sizeof(exp) / sizeof(*exp);
+  int len = 4;
   for( int i = 0; i < len; ++i ){
     mut_function(exp[i]);
   }
@@ -548,7 +553,7 @@ void Pattern::compulate(Example &ori1, Example &ori2)
 double Pattern::getScore(const Example &exp)
 {
   int expCompSize = exp._areaA.size();
-  int score = 0;
+  double score = 0;
   for(int i=0; i < expCompSize; ++i){
     int sub = exp._areaA[i] - exp._areaB[i];
     score += sub > 0 ? sub : -sub;
@@ -572,29 +577,30 @@ Example* Pattern::findbest(Example* candidate)
     measureArea(candidate[i]);
   }
 
-    for(int i=0; i < CandNum; ++i){
-      score[i] = getScore(candidate[i]);
-      sum += (1 / score[i]);
-    }
-
   for(int i=0; i < CandNum; ++i){
-    ratio[i] = (score[i] / sum);
-    if(i > 0)
-      ratio[i] += ratio[i-1];
+    score[i] = getScore(candidate[i]); 
+  //  cout << score[i] <<endl;
+    sum += (1 / score[i]);
   }
 
-  for(int i=0; i < CandNum; ++i){
+  ratio[0] = score[0] / sum;
+  for(int i=1; i < CandNum; ++i){
+    ratio[i] = (score[i] / sum);
+    ratio[i] += ratio[i-1];
+  }
+
+  for(int i=0; i < CandNum/2; ++i){
     seleteExp[i] = candidate[drawExample(candidate, ratio)];
   }
 
   //compulate
-  for(int i=0; i < CandNum / 2; i+=2){
+  for(int i=0; i < CandNum/2; i+=2){
     compulate(seleteExp[i], seleteExp[i+1]);
   }
 
   //mutation
   mutation(seleteExp);
-
+  
   return seleteExp;
 }
 

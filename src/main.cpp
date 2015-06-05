@@ -8,7 +8,8 @@ using namespace std;
 int main(int argc, char **argv)
 {
   Pattern pat;
-  pat.readfile( argv[1] );
+  //pat.readfile( argv[1] );
+  pat.readfile( "input/test1" );
   pat.nodeInitailize();
   pat.edgeInitailize();
 
@@ -20,22 +21,27 @@ int main(int argc, char **argv)
   pat.setGeneBase();
   // for(int i = 0 ; i < pat._compSize ; i++)
   //   cout << "#" << i+1 <<" "<<pat._comps[i]->_colorable << endl;
-  Example initExp[INIT_CAND_NUM];
-  Example tmpExp[INIT_CAND_NUM];
+  Example initExp[8];
+  Example tmpExp[8];
 
-  for(int i=0; i < INIT_CAND_NUM; ++i)
-    pat.genGene(initExp[i]);
+  for(int i=0; i < 8; ++i)
+    pat.genGene(tmpExp[i]);
   
+  Example* seleteExp;
+
   for(int i=0; i < ITER_NUM; ++i){
-    Example* seleteExp = pat.findbest(initExp); // return INIT_CAND_NUM / 2 number of Example
+    seleteExp = pat.findbest(tmpExp); // return INIT_CAND_NUM / 2 number of Example
     
-    for(int j=0; j < INIT_CAND_NUM; ++j){
-      if(j < INIT_CAND_NUM/2)
+    for(int j=0; j < 8; ++j){
+      if(j < 8/2)
         tmpExp[j] = seleteExp[j];
       else
         pat.genGene(tmpExp[j]);
     }
+    if(i!=ITER_NUM-1)
+      delete [] seleteExp;
   }
-
+  for(int i=0; i<4; ++i)
+    cout << pat.getScore(seleteExp[i])<<endl;
   return 0;
 }
