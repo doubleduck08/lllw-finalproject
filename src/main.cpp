@@ -1,18 +1,27 @@
 #include <iostream>
 #include "pattern.h"
 using namespace std;
-
+# include <algorithm>
 # include <ctime>
 # include <cstdlib>
 #define INIT_CAND_NUM 4
-#define ITER_NUM 100
+#define ITER_NUM 1000
+
+bool sortByWinNum(Component *i, Component *j)
+{
+  return (i->_winInComp.size() < j->_winInComp.size());
+}
+bool sortByDiffSum(Component *i, Component *j)
+{
+  return (i->_diffSum < j->_diffSum);
+}
 
 int main(int argc, char **argv)
 {
   srand(time(NULL));
   Pattern pat;
-  //pat.readfile( argv[1] );
-  pat.readfile( "input/test1" );
+  pat.readfile( argv[1] );
+  //pat.readfile( "input/test1" );
   pat.nodeInitailize();
   pat.edgeInitailize();
 
@@ -33,18 +42,29 @@ int main(int argc, char **argv)
     pat.measureArea(tmp);
     if(pat.getScore(tmp) < pat.getScore(best))
       best = tmp;
-    cout <<endl<< "tmp = ";
+  /*  cout <<endl<< "tmp = ";
     for(int j=0; j<4;++j)
       cout << tmp._colorGene[j];
     cout << " score = "<<pat.getScore(tmp) << endl;
+  */
   }
   cout <<"best = "<< pat.getScore(best)<<endl;
 
+  Example parUnsort;
+  Example parSort;
+  Example parDiffSumSort;
 
-
-
+  pat.greedy(parUnsort);
   
-  
+  sort(pat._colorComps.begin(), pat._colorComps.end(), sortByWinNum);
+  pat.greedy(parSort);
+
+  sort(pat._colorComps.begin(), pat._colorComps.end(), sortByDiffSum);
+  pat.greedy(parDiffSumSort);
+
+  cout << "unsort = " << pat.getScore(parUnsort) << endl;
+  cout << "sort = " << pat.getScore(parSort) << endl;
+  cout << "diff = " << pat.getScore(parDiffSumSort) << endl;
   /*
   Example initExp[8];
   Example tmpExp[8];

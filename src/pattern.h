@@ -54,6 +54,7 @@ struct WindowInComp
   Window *_window;
   int _areaA;
   int _areaB;
+  int _areaDiff; //A-B
 };
 
 class Component
@@ -69,6 +70,7 @@ public:
   // bool _switchColor; // used by final solution
   // int _windowSize;
   vector<WindowInComp *> _winInComp;
+  int _diffSum;
 };
 
 struct CompInWindows
@@ -162,7 +164,7 @@ public:
   int drawExample(Example *, const double *);
   Example* findbest(Example*);
   bool measureArea(Example &);
-
+  void greedy(Example &);
 
 
 };

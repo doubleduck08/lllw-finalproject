@@ -1,5 +1,6 @@
 # include "pattern.h"
-# include <iostream>
+# include <algorithm>
+# include <vector>
 using namespace std;
 #define MUT_NUM 3
 
@@ -444,8 +445,9 @@ bool Pattern::setGeneBase()
             wic->_window = win;
             wic->_areaA  = x * y * ( 1 - color );
             wic->_areaB  = x * y * color;
+            wic->_areaDiff = wic->_areaA - wic->_areaB;
             comp->_winInComp.push_back(wic);
-
+              
             CompInWindows* ciw = new CompInWindows;
             ciw->_comp  = comp;
             ciw->_areaA = x * y * ( 1 - color );
@@ -460,6 +462,10 @@ bool Pattern::setGeneBase()
         else i++;
       }
     }
+    
+    comp->_diffSum = 0;
+    int nn = comp->_winInComp.size();
+    for(int jj = 0 ; jj < nn ; jj++ ) comp->_diffSum += comp->_winInComp[jj]->_areaDiff;
   }
   return true;
 }
@@ -604,5 +610,20 @@ Example* Pattern::findbest(Example* candidate)
   mutation(seleteExp);
   
   return seleteExp;
+}
+
+void Pattern::greedy(Example &exp)
+{ 
+  exp._colorGene.resize(_colorCompsSize, false);
+  double minScore = getScore(exp);
+  measureArea(exp);
+  for(int i=0; i < _colorCompsSize; ++i){
+    exp._colorGene[(_colorComps[i]->_geneId)-1] = true;
+    measureArea(exp);
+    if(minScore > getScore(exp))
+      minScore = getScore(exp);
+    else
+      exp._colorGene[(_colorComps[i]->_geneId)-1] = false;
+  }
 }
 
