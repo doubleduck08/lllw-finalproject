@@ -4,16 +4,14 @@ using namespace std;
 # include <algorithm>
 # include <ctime>
 # include <cstdlib>
-#define INIT_CAND_NUM 4
-#define ITER_NUM 1000
 
 bool sortByWinNum(Component *i, Component *j)
 {
-  return (i->_winInComp.size() < j->_winInComp.size());
+  return (i->_winInComp.size() > j->_winInComp.size());
 }
 bool sortByDiffSum(Component *i, Component *j)
 {
-  return (i->_diffSum < j->_diffSum);
+  return (i->_diffSum > j->_diffSum);
 }
 
 int main(int argc, char **argv)
@@ -33,23 +31,31 @@ int main(int argc, char **argv)
   pat.setGeneBase();
   // for(int i = 0 ; i < pat._compSize ; i++)
   //   cout << "#" << i+1 <<" "<<pat._comps[i]->_colorable << endl;
-  Example best;
-  pat.genGene(best);
-  pat.measureArea(best);
-  for(int i=0; i<ITER_NUM; ++i){
-    Example tmp;
-    pat.genGene(tmp);
-    pat.measureArea(tmp);
-    if(pat.getScore(tmp) < pat.getScore(best))
-      best = tmp;
+  Example* best = new Example [4];
+  pat.randomBest(best, 4);
+  pat.findbadGene(best[0]);
   /*  cout <<endl<< "tmp = ";
     for(int j=0; j<4;++j)
       cout << tmp._colorGene[j];
     cout << " score = "<<pat.getScore(tmp) << endl;
   */
+  int better = 0;
+  for(int i=0; i < 4; ++i){
+    
+    cout <<"best["<< i << "] = " << pat.getScore(best[i])<<endl;
+    double tmp1 = pat.getScore(best[i]);
+    pat.findbadGene(best[i]);
+    
+    cout <<"best["<< i << "] = " << pat.getScore(best[i])<<endl;
+    double tmp2 = pat.getScore(best[i]);
+    cout << "sub = " << tmp1 - tmp2 << endl;
+    if (tmp1-tmp2 > 0)
+      better++;
   }
-  cout <<"best = "<< pat.getScore(best)<<endl;
-
+  cout << better<<endl;
+   
+  
+/*
   Example parUnsort;
   Example parSort;
   Example parDiffSumSort;
@@ -65,6 +71,9 @@ int main(int argc, char **argv)
   cout << "unsort = " << pat.getScore(parUnsort) << endl;
   cout << "sort = " << pat.getScore(parSort) << endl;
   cout << "diff = " << pat.getScore(parDiffSumSort) << endl;
+  
+  */
+  
   /*
   Example initExp[8];
   Example tmpExp[8];
@@ -91,3 +100,4 @@ int main(int argc, char **argv)
   */
   return 0;
 }
+

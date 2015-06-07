@@ -95,6 +95,13 @@ public:
   // int _totalAreaB; // used by final solution
   // int _compSize;
   vector<CompInWindows *> _compInWin;
+
+};
+
+struct winScoreInExp
+{
+  int _id;
+  long double _score;
 };
 
 class Example
@@ -108,6 +115,8 @@ public:
   // character
   vector<int> _areaA;
   vector<int> _areaB;
+  
+  vector<winScoreInExp> _winScoreInExpList;
 };
 
 class Pattern
@@ -157,16 +166,17 @@ public:
   
   //findbest
   void genGene(Example &);
-  double getScore(const Example &);
+  double getScore(Example &);
   void mut_function(Example &);
   void mutation(Example *);
   void compulate(Example &, Example &);
   int drawExample(Example *, const double *);
   Example* findbest(Example*);
   bool measureArea(Example &);
+
   void greedy(Example &);
-
-
+  void randomBest(Example *, const int &);
+  void findbadGene(Example &);
 };
 
 # endif
