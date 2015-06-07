@@ -258,13 +258,18 @@ void Pattern::color_comps()
 
   Node *current, *neibor; //Node* a,b means one ptr, one var!!!!!!
   queue<Node*> q;
-  vector<Component*>::iterator it_C;
+  vector<Node*>::iterator it_N;
   vector<Edge*>::iterator it_E;
+  int uncolorable=false;
+  _compSize = 0;
   // int color_pair = 1; //if color_pair=n , it provides color(2n) & color(2n-1)
-  for (it_C=_comps.begin() ; it_C!=_comps.end() ; it_C++)
+  for (it_N=_nodes.begin() ; it_N!=_nodes.end() ; it_N++)
   {
-    (*it_C)->_colorable = true;
-    current=(*it_C)->_nodes[0];
+    if ((*it_N)->traveled) continue;     
+    Component *comp = new Component;
+    comp->_nodes.push_back(*it_N);
+    //(*it_C)->_colorable = true;
+    current=(*it_N);
     // current->_color = 2*color_pair-1;
     current->_color = 0;
     current->_traveled = true;
@@ -276,22 +281,37 @@ void Pattern::color_comps()
           it_E!=current->_edge.end() ; it_E++)
       {
         neibor = (*it_E)->getNeighbor(current);
-        if ( !(neibor->_traveled) ){
+        if (uncolorable && !(neibor->_traveled)) {
+           comp->_nodes.push_back(neibor);
+           continue;
+        } 
+        else if (uncolorable) continue;
+        else if ( !(neibor->_traveled) ){
+          comp.push_back(neibor);
           // neibor->_color = (4*color_pair-1) - current->_color;
           neibor->_color = 1 - current->_color;
           neibor->_traveled=true;
           q.push(neibor);
         }
         else if (neibor->_color == current->_color) {
-          be_uncolorable(*it_C);
-          {queue<Node*> tmp; swap(q, tmp);}
+          //be_uncolorable(*it_C);
+          uncolorable=true;
+          //{queue<Node*> tmp; swap(q, tmp);}
           //q.clean();
-          (*it_C)->_colorable=false;
-          break;
+          //(*it_C)->_colorable=false;
+          //break;
         }
       }
-    }
+    }    
     // color_pair++;
+    if (uncolorable) {
+       comp->colorable=false;
+       be_uncolorable(comp);
+    }
+    comp->id=_compSize;
+    _comps.push_back(comp);
+    _compSize++;
+    uncolorable=false;
   }
 }
 
