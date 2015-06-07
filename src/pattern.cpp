@@ -600,7 +600,7 @@ Example* Pattern::findbest(Example* candidate)
 
 
 // measure final score
-double finalScore(Example &ex)
+double Pattern::finalScore(Example &ex)
 {
   int x_count = 0, y_count = 0;
   if( (_boxX2 - _boxX1)%_omega != 0 ) x_count += 1;
