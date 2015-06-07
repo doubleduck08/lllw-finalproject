@@ -598,3 +598,25 @@ Example* Pattern::findbest(Example* candidate)
   return seleteExp;
 }
 
+
+// measure final score
+double finalScore(Example &ex)
+{
+  int x_count = 0, y_count = 0;
+  if( (_boxX2 - _boxX1)%_omega != 0 ) x_count += 1;
+  if( (_boxY2 - _boxY1)%_omega != 0 ) y_count += 1;
+  x_count += (_boxX2 - _boxX1) / _omega;
+  y_count += (_boxY2 - _boxY1) / _omega;
+
+  int win_count = x_count * y_count;
+  int expCompSize = ex._areaA.size();
+  double score = 0;
+  for(int i=0; i < expCompSize; ++i){
+    int sub = ex._areaA[i] - ex._areaB[i];
+    score += sub > 0 ? sub : -sub;
+  }
+
+  score = 100 * score / (_omega*_omega);
+  score = 100 - score / 5.0;
+  return score;
+}
