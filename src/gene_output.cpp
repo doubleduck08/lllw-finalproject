@@ -51,7 +51,7 @@ void Pattern::gene_output(Eample* exa)
       fout<<"  compute_area(window):"
       for (int i=0 ; i<_colorComps[pos]->_windowSize ; i++) { 
           fout<<"    window["
-              <<_colorComps[pos]->_winInComp[i]->_window->id<<"10] :\n";
+              <<_colorComps[pos]->_winInComp[i]->_window->id<<"] :\n";
           fout<<"      color A : "<<colorComps[pos]->winInComps[i]->_AreaA;
           fout<<"\n      color B : "<<colorComps[pos]->winInComps[i]->_AreaB;
           total_area_WA+=colorComps[pos]->winInComps[i]->_AreaA;    
