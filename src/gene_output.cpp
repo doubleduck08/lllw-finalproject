@@ -49,34 +49,16 @@ void Pattern::gene_output(Eample* exa)
       fout<<"  total_area_A : "<<toral_area_A<<endl;
       fout<<"  total_area_B : "<<toral_area_B<<endl;
       fout<<"  compute_area(window):"
-      for (int i=0 ; i<_winInComp.size() ; i++) { 
-          fout<<"    window["<<_winInComp[i]->_window->id<<"] :\n"
-          int area=((*it_N)->_shape->x2-(*it_N)->_shape->x1)*
-                   ((*it_N)->_shape->y2-(*it_N)->_shape->y1);
-          if (*it_B) {
-             if ((*it_N)->color) {
-             fout<<"      color : A\n"
-                 <<"      area  : "<<area<<endl; 
-             total_area_A+=area;
-             }
-             else
-             fout<<"      color : B\n"
-                   "      color : "<<area<<endl;
-             total_area_B+=area;
-          }
-          else {
-             if ((*it_N)->color)
-             fout<<"      color : B\n"
-                 <<"      area  : "<<area<<endl; 
-             total_area_B+=area;
-             else
-             fout<<"      color : A\n"
-                 <<"      area  : "<<area<<endl; 
-             total_area_A+=area;
-          }
+      for (int i=0 ; i<_colorComps[pos]->_windowSize ; i++) { 
+          fout<<"    window["
+              <<_colorComps[pos]->_winInComp[i]->_window->id<<"10] :\n";
+          fout<<"      color A : "<<colorComps[pos]->winInComps[i]->_AreaA;
+          fout<<"\n      color B : "<<colorComps[pos]->winInComps[i]->_AreaB;
+          total_area_WA+=colorComps[pos]->winInComps[i]->_AreaA;    
+          total_area_WB+=colorComps[pos]->winInComps[i]->_AreaB;    
       }
-      fout<<"  total_area_A : "<<toral_area_A<<endl;
-      fout<<"  total_area_B : "<<toral_area_B<<endl;
+      fout<<"  total_area_WA : "<<toral_area_WA<<endl;
+      fout<<"  total_area_WB : "<<toral_area_WB<<endl;
    } 
 }
 
