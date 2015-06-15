@@ -1,0 +1,56 @@
+colorcomp[2] :
+  compute_area(node):
+    node[6] :
+(540,270) (725,330) 
+    node[8] :
+(640,400) (820,470) 
+    node[9] :
+(860,360) (1020,410) 
+    node[7] :
+(720,120) (940,220) 
+  total_area_A : 34600
+  total_area_B : 19100
+  compute_area(window):
+  total_area_WA : 34600
+  total_area_WB : 19100
+colorcomp[3] :
+  compute_area(node):
+    node[10] :
+(1340,150) (1525,210) 
+    node[12] :
+(1440,280) (1620,350) 
+    node[13] :
+(1660,240) (1820,340) 
+    node[11] :
+(1520,0) (1740,100) 
+  total_area_A : 27100
+  total_area_B : 34600
+  compute_area(window):
+  total_area_WA : 27100
+  total_area_WB : 34600
+colorcomp[4] :
+  compute_area(node):
+    node[14] :
+(660,1050) (845,1110) 
+    node[16] :
+(760,1180) (940,1250) 
+    node[17] :
+(980,1110) (1460,1230) 
+    node[15] :
+(840,900) (1060,1000) 
+  total_area_A : 34600
+  total_area_B : 68700
+  compute_area(window):
+  total_area_WA : 34600
+  total_area_WB : 68700
+colorcomp[5] :
+  compute_area(node):
+    node[18] :
+(1560,950) (1860,1260) 
+    node[19] :
+(1560,800) (1800,900) 
+  total_area_A : 24000
+  total_area_B : 93000
+  compute_area(window):
+  total_area_WA : 24000
+  total_area_WB : 93000

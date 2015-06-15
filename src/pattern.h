@@ -4,6 +4,7 @@
 # include <algorithm>
 # include <vector>
 # include <map>
+# include <iostream>
 # include <fstream>
 # include <sstream>
 using namespace std;
@@ -61,7 +62,8 @@ public:
   Component(){};
   ~Component(){};
 
-  bool _id;
+  int _id;
+  int _geneId;
   bool _colorable;
   vector<Node *> _nodes;
 
@@ -80,11 +82,16 @@ struct CompInWindows
 class Window
 {
 public:
-  Window(){};
+  Window(int,int,int,int,int);
   ~Window(){};
 
   // int _totalAreaA; // "total of (Switch ? Area A : Area B)"
   // int _totalAreaB; // used by final solution
+  int _id;
+  int _x1;
+  int _x2;
+  int _y1;
+  int _y2;
   int _compSize;
   vector<CompInWindows *> _compInWin;
 };
@@ -97,10 +104,10 @@ public:
   bool measureArea();
 
   // gene
-  vector<bool> colorGene;
+  vector<bool> _colorGene;
   // character
-  vector<int> AreaA;
-  vector<int> AreaB;
+  vector<int> _areaA;
+  vector<int> _areaB;
 };
 
 class Pattern
@@ -119,6 +126,8 @@ public:
   void dfs_visit(Node*, Component*);
   void color_comps();
   void clear_traveled();
+  void gene_output(Example*);
+  void genGene(Example&);
 
   bool setBox();
   bool setWindows();
@@ -133,9 +142,11 @@ public:
   int _nodeSize;
   int _edgeSize;
   int _compSize;
+  int _colorCompsSize;
   vector<Node *> _nodes; // all
   vector<Edge *> _edges; // all
   vector<Component *> _comps;
+  vector<Component *> _colorComps;
 
   int _boxX1;
   int _boxX2;

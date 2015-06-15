@@ -1,0 +1,136 @@
+colorcomp[2] :
+  compute_area(node):
+    node[6] :
+      color : B
+      color : 11100
+    node[8] :
+      color : A
+      area  : 12600
+    node[9] :
+      color : B
+      color : 8000
+    node[7] :
+      color : A
+      area  : 22000
+  total_area_A : 34600
+  total_area_B : 19100
+  compute_area(window):
+    window[1] :
+      color A : 0
+      color B : 11100
+    window[1] :
+      color A : 12600
+      color B : 0
+    window[3] :
+      color A : 12600
+      color B : 0
+    window[1] :
+      color A : 0
+      color B : 8000
+    window[2] :
+      color A : 0
+      color B : 3000
+    window[3] :
+      color A : 0
+      color B : 8000
+    window[4] :
+      color A : 0
+      color B : 3000
+    window[1] :
+      color A : 22000
+      color B : 0
+  total_area_WA : 47200
+  total_area_WB : 33100
+colorcomp[3] :
+  compute_area(node):
+    node[10] :
+      color : A
+      area  : 11100
+    node[12] :
+      color : B
+      area  : 12600
+    node[13] :
+      color : A
+      area  : 16000
+    node[11] :
+      color : B
+      area  : 22000
+  total_area_A : 27100
+  total_area_B : 34600
+  compute_area(window):
+    window[1] :
+      color A : 6000
+      color B : 0
+    window[2] :
+      color A : 11100
+      color B : 0
+    window[2] :
+      color A : 0
+      color B : 12600
+    window[2] :
+      color A : 16000
+      color B : 0
+    window[2] :
+      color A : 0
+      color B : 22000
+  total_area_WA : 33100
+  total_area_WB : 34600
+colorcomp[4] :
+  compute_area(node):
+    node[14] :
+      color : B
+      color : 11100
+    node[16] :
+      color : A
+      area  : 12600
+    node[17] :
+      color : B
+      color : 57600
+    node[15] :
+      color : A
+      area  : 22000
+  total_area_A : 34600
+  total_area_B : 68700
+  compute_area(window):
+    window[3] :
+      color A : 0
+      color B : 11100
+    window[3] :
+      color A : 12600
+      color B : 0
+    window[3] :
+      color A : 0
+      color B : 55200
+    window[4] :
+      color A : 0
+      color B : 57600
+    window[3] :
+      color A : 22000
+      color B : 0
+    window[4] :
+      color A : 10000
+      color B : 0
+  total_area_WA : 44600
+  total_area_WB : 123900
+colorcomp[5] :
+  compute_area(node):
+    node[18] :
+      color : B
+      color : 93000
+    node[19] :
+      color : A
+      area  : 24000
+  total_area_A : 24000
+  total_area_B : 93000
+  compute_area(window):
+    window[4] :
+      color A : 0
+      color B : 93000
+    window[2] :
+      color A : 24000
+      color B : 0
+    window[4] :
+      color A : 24000
+      color B : 0
+  total_area_WA : 48000
+  total_area_WB : 93000
