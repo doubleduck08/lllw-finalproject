@@ -426,17 +426,16 @@ bool Pattern::setGeneBase()
         {
           win = _windows[ win_id + i * x_count + j -1 ];
 
-          if( shape->_x2 <= win->_x2 && shape->_x1 >= win->_x1 ) x = shape->_x2 - shape->_x1;
-          else if( shape->_x1 < win->_x2 && shape->_x2 > win->_x2 ) x = win->_x2 - shape->_x1;
-          else if( shape->_x2 > win->_x1 && shape->_x1 < win->_x1 ) x = shape->_x2 - win->_x1;
-          else if( shape->_x1 < win->_x1 && shape->_x2 > win->_x2) x = _omega;
-          else x = 0;
-
-          if( shape->_y2 <= win->_y2 && shape->_y1 >= win->_y1 ) y = shape->_y2 - shape->_y1;
-          else if( shape->_y1 < win->_y2 && shape->_y2 > win->_y2 ) y = win->_y2 - shape->_y1;
-          else if( shape->_y2 > win->_y1 && shape->_y1 < win->_y1 ) y = shape->_y2 - win->_y1;
-          else if( shape->_y1 < win->_y1 && shape->_y2 > win->_y2) y = _omega;
-          else y = 0;
+               if( shape->_x2 <= win->_x2 && shape->_x1 >= win->_x1 ) x = shape->_x2 - shape->_x1;
+               else if( shape->_x1 <= win->_x1 && shape->_x2 >= win->_x2) x = _omega;
+               else if( shape->_x2 >= win->_x1 && shape->_x1 <= win->_x1 ) x = shape->_x2 - win->_x1;
+               else if( shape->_x1 <= win->_x2 && shape->_x2 >= win->_x2 ) x = win->_x2 - shape->_x1;
+               else x = 0;
+               if( shape->_y2 <= win->_y2 && shape->_y1 >= win->_y1 ) y = shape->_y2 - shape->_y1;
+               else if( shape->_y1 <= win->_y1 && shape->_y2 >= win->_y2) y = _omega;
+               else if( shape->_y1 <= win->_y2 && shape->_y2 >= win->_y2 ) y = win->_y2 - shape->_y1;
+               else if( shape->_y2 >= win->_y1 && shape->_y1 <= win->_y1 ) y = shape->_y2 - win->_y1;
+               else y = 0;
 
           if( x * y > 0 )
           {
