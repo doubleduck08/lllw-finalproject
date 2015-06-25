@@ -427,19 +427,30 @@ bool Pattern::setGeneBase()
         while(j < x_count - win_x_pos)
         {
           win = _windows[ win_id + i * x_count + j -1 ];
+          /*
+             if( shape->_x2 <= win->_x2 && shape->_x1 >= win->_x1 ) x = shape->_x2 - shape->_x1;
+             else if( shape->_x1 < win->_x2 && shape->_x2 > win->_x2 ) x = win->_x2 - shape->_x1;
+             else if( shape->_x2 > win->_x1 && shape->_x1 < win->_x1 ) x = shape->_x2 - win->_x1;
+             else if( shape->_x1 < win->_x1 && shape->_x2 > win->_x2) x = _omega;
+             else x = 0;
 
+             if( shape->_y2 <= win->_y2 && shape->_y1 >= win->_y1 ) y = shape->_y2 - shape->_y1;
+             else if( shape->_y1 < win->_y2 && shape->_y2 > win->_y2 ) y = win->_y2 - shape->_y1;
+             else if( shape->_y2 > win->_y1 && shape->_y1 < win->_y1 ) y = shape->_y2 - win->_y1;
+             else if( shape->_y1 < win->_y1 && shape->_y2 > win->_y2) y = _omega;
+             else y = 0;
+           */
           if( shape->_x2 <= win->_x2 && shape->_x1 >= win->_x1 ) x = shape->_x2 - shape->_x1;
-          else if( shape->_x1 < win->_x2 && shape->_x2 > win->_x2 ) x = win->_x2 - shape->_x1;
-          else if( shape->_x2 > win->_x1 && shape->_x1 < win->_x1 ) x = shape->_x2 - win->_x1;
-          else if( shape->_x1 < win->_x1 && shape->_x2 > win->_x2) x = _omega;
+          else if( shape->_x1 <= win->_x1 && shape->_x2 >= win->_x2) x = _omega;
+          else if( shape->_x2 >= win->_x1 && shape->_x1 <= win->_x1 ) x = shape->_x2 - win->_x1;
+          else if( shape->_x1 <= win->_x2 && shape->_x2 >= win->_x2 ) x = win->_x2 - shape->_x1;
           else x = 0;
-
           if( shape->_y2 <= win->_y2 && shape->_y1 >= win->_y1 ) y = shape->_y2 - shape->_y1;
-          else if( shape->_y1 < win->_y2 && shape->_y2 > win->_y2 ) y = win->_y2 - shape->_y1;
-          else if( shape->_y2 > win->_y1 && shape->_y1 < win->_y1 ) y = shape->_y2 - win->_y1;
-          else if( shape->_y1 < win->_y1 && shape->_y2 > win->_y2) y = _omega;
+          else if( shape->_y1 <= win->_y1 && shape->_y2 >= win->_y2) y = _omega;
+          else if( shape->_y1 <= win->_y2 && shape->_y2 >= win->_y2 ) y = win->_y2 - shape->_y1;
+          else if( shape->_y2 >= win->_y1 && shape->_y1 <= win->_y1 ) y = shape->_y2 - win->_y1;
           else y = 0;
-
+          
           if( x * y > 0 )
           {
             WindowInComp* wic = new WindowInComp;
@@ -499,7 +510,7 @@ bool Pattern::measureArea(Example &exp)
 
     winDensityInExp tmp;
     tmp._id = win->_id;
-		double sub_AB = areaA - areaB > 0 ? areaA - areaB : areaB - areaA;
+    double sub_AB = areaA - areaB > 0 ? areaA - areaB : areaB - areaA;
     tmp._density = sub_AB / (double)(_omega * _omega); 
     exp._winDensityInExpVec.push_back(tmp);
 
@@ -525,7 +536,7 @@ void Pattern::greedy(Example &exp)
   for(int i=0; i < _colorCompsSize; ++i){
     exp._colorGene[(_colorComps[i]->_geneId)-1] = true;
     measureArea(exp);
-		double tmp = finalScore(exp);
+    double tmp = finalScore(exp);
     if(maxScore < tmp)
       maxScore = tmp;
     else
@@ -554,12 +565,14 @@ double Pattern::finalScore(Example &ex)
   //int win_count = x_count * y_count;
   double score = 0;
   for(int i=0; i < _windowSize; ++i){
-		int sub = ex._areaA[i] - ex._areaB[i];
-		
-		score += (sub > 0 ? sub : -1*sub);
+    int sub = ex._areaA[i] - ex._areaB[i];
+
+    score += (sub > 0 ? sub : -1*sub);
   }
 
   score = 100 * score / (_omega*_omega);
   score = 100 - score / 5.0;
   return score;
 }
+
+

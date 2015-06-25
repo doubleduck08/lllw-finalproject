@@ -31,12 +31,14 @@ int main(int argc, char **argv)
   pat.setGeneBase();
   // for(int i = 0 ; i < pat._compSize ; i++)
   //   cout << "#" << i+1 <<" "<<pat._comps[i]->_colorable << endl;
-  Example* best = new Example [1];
-  pat.randomBest(best, 1);
+  Example* best = new Example [2];
+  pat.randomBest(best, 2);
   //pat.findbadGene(best[0]);
   cout << pat.finalScore(best[0]) << endl;	
+   
   cout << pat._colorCompsSize << endl;	
- 
+  
+  
 
   /*
   Example parUnsort;
