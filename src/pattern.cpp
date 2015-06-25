@@ -3,11 +3,11 @@
 # include <vector>
 # include <iostream>
 using namespace std;
-# define RANDOMBEST 1000
+# define RANDOMBEST 100
 # define ITER_NUM 100
 # define FINAL_ITER_NUM 10000
-# define BOUND_RATIO 0.9
-# define BOUND_FIX 0.95
+# define BOUND_RATIO 0.8
+# define BOUND_FIX 0.9
 # define NBEST 100
 Shape::Shape(int id, int x1, int x2, int y1, int y2)
 {
@@ -502,11 +502,11 @@ bool Pattern::measureArea(Example &exp)
 
     for(int j=0; j < n ; ++j){
       comp = win->_compInWin[j]->_comp;
-      if(exp._colorGene[comp->_geneId - 1]){
+      if(exp._colorGene[comp->_geneId - 1] == 1){
         areaA += win->_compInWin[j]->_areaB;
         areaB += win->_compInWin[j]->_areaA;
       }
-      else{
+      else if(exp._colorGene[comp->_geneId - 1] == 0){
         areaA += win->_compInWin[j]->_areaA;
         areaB += win->_compInWin[j]->_areaB;
       }
@@ -532,19 +532,30 @@ void Pattern::genGene(Example& exp)
   }
 }
 
-void Pattern::greedy(Example &exp)
+void Pattern::greedy(Example &exp, const int &fixGeneId)
 { 
+  exp._colorGene.assign(_colorCompsSize, -1);
+  
+  exp._colorGene[0] = 0; //standard for preventing reverse
+  exp._colorGene[fixGeneId] = 0;
   measureArea(exp);
-  exp._colorGene.resize(_colorCompsSize, false);
   double maxScore = finalScore(exp);
+  
   for(int i=0; i < _colorCompsSize; ++i){
-    exp._colorGene[(_colorComps[i]->_geneId)-1] = true;
+    if(exp._colorGene[(_colorComps[i]->_geneId)-1] != -1) continue; 
+    exp._colorGene[(_colorComps[i]->_geneId)-1] = 1;
     measureArea(exp);
-    double tmp = finalScore(exp);
-    if(maxScore < tmp)
-      maxScore = tmp;
+    double tmp1 = finalScore(exp);
+   
+    exp._colorGene[(_colorComps[i]->_geneId)-1] = 0;
+    measureArea(exp);
+    double tmp0 = finalScore(exp);
+    //cout << tmp1 <<" " <<tmp0;
+    
+    if(tmp1 > tmp0)
+      exp._colorGene[(_colorComps[i]->_geneId)-1] = 1;
     else
-      exp._colorGene[(_colorComps[i]->_geneId)-1] = false;
+      exp._colorGene[(_colorComps[i]->_geneId)-1] = 0;
   }
   measureArea(exp);
 }
@@ -607,6 +618,7 @@ bool Pattern::findFix(Example * p_ex, const int &exNum)
   int fixBound = exNum * BOUND_FIX;
   
   for(int i=0; i < _colorCompsSize; ++i){
+    if(fixGene[i] != -1) continue;
     int oneNum = 0;
     for(int j=0; j < exNum; ++j){
       if(p_ex[j]._colorGene[i] == 1)
@@ -663,23 +675,45 @@ void Pattern::randomInFixGene(Example &ex, const int &iterNum)
 
 Example Pattern::statistics()
 {
+  Example maxEx;
   Example* p_ex = new Example [NBEST];
-  randomBest(p_ex, NBEST);  
-  
+  //randomBest(p_ex, NBEST);  
+   
   initFixGene(); 
-  double max=0.0;
-  while(findFix(p_ex, NBEST)){
+  fixNum = 0;  
+  Example* p_greedyEx = new Example [_colorCompsSize];
+  double max = 0.0;
+  double tmp = 0.0; 
+  for(int i=0; i < _colorCompsSize; ++i){ 
+    greedy(p_greedyEx[i], i);
+    tmp = finalScore(p_greedyEx[i]);
+    if(tmp > max){
+      max = tmp;
+      maxEx = p_greedyEx[i];
+    }
+  }
+  findFix(p_greedyEx, _colorCompsSize);
     
+  delete [] p_greedyEx;
+  //cout << fixNum;
+  
+  for(int i=0; i<NBEST; ++i)
+    randomInFixGene(p_ex[i], ITER_NUM);
+  
+  while(findFix(p_ex, NBEST)){
+    max=0.0;
     for(int i=0; i<NBEST; ++i){
       randomInFixGene(p_ex[i], ITER_NUM);
-      double tmp = finalScore(p_ex[i]);
-      if(tmp > max) max = tmp;
+      tmp = finalScore(p_ex[i]);
+      if(tmp > max){
+        max = tmp;
+        maxEx = p_ex[i];
+      }
     } 
     cout << " score = " << max <<endl; 
   }
 
-  randomInFixGene(p_ex[0], FINAL_ITER_NUM); 
-  return p_ex[0];
+  return maxEx;
   
 }
 
@@ -688,5 +722,3 @@ void Pattern::initFixGene()
   fixGene.assign(_colorCompsSize, -1);
   fixGene[0] = 0;
 }
-
-

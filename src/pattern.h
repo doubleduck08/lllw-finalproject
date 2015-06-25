@@ -111,7 +111,8 @@ public:
   ~Example(){};
 
   // gene
-  vector<bool> _colorGene;
+  vector<int> _colorGene;
+
   // character
   vector<int> _areaA;
   vector<int> _areaB;
@@ -174,7 +175,7 @@ public:
   Example* findbest(Example*);
   bool measureArea(Example &);
 
-  void greedy(Example &);
+  void greedy(Example &, const int &);
   void randomBest(Example *, const int &);
   void findbadGene(Example &);
   Example findGoodGene(const Example &, const Example &);

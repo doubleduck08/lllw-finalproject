@@ -33,7 +33,7 @@ int main(int argc, char **argv)
   pat.setGeneBase();
   // for(int i = 0 ; i < pat._compSize ; i++)
   //   cout << "#" << i+1 <<" "<<pat._comps[i]->_colorable << endl;
-  Example* best = new Example [2];
+  /*Example* best = new Example [2];
   pat.randomBest(best, 2);
   //pat.findbadGene(best[0]);
   cout << pat.finalScore(best[0]) << endl;	
@@ -48,29 +48,58 @@ int main(int argc, char **argv)
   cout << pat.finalScore(best[0]) << endl;	
   
   cout <<"====="<<endl;
+  */
 
-  Example tmp = pat.statistics();
+  cout << "=== Greedy ===" << endl;
+  
+  Example tmp;
+  sort(pat._colorComps.begin(), pat._colorComps.end(), sortByDiffSum)
+  pat.greedy(tmp, 0);
+  pat.measureArea(tmp);
+  cout << pat.finalScore(tmp) << endl;
+
+  cout << "=== Shuffle ===" << endl;
+  
+  for(int i = 0 ; i < 10 ; i++) {
+    random_shuffle ( pat._colorComps.begin(), pat._colorComps.end() );
+    pat.greedy(tmp,0);
+    pat.measureArea(tmp);
+    cout << pat.finalScore(tmp) << endl;
+  }
+
+  cout <<"=== Shuffle && Statistics ==="<<endl;
+
+  //sort(pat._colorComps.begin(), pat._colorComps.end(), sortByDiffSum);
+  tmp = pat.statistics();
+  pat.measureArea(tmp);
   cout << pat.finalScore(tmp) << endl;
   
   //version 1
-  /*
-     Example parUnsort;
-     Example parSort;
-     Example parDiffSumSort;
-     pat.genGene(parUnsort);
-     pat.genGene(parSort);
-     pat.genGene(parDiffSumSort);
 
+     //Example parUnsort;
+     //Example parSort;
+     //Example parDiffSumSort;
+/*
      pat.greedy(parUnsort);
+     cout << "unsort = " << pat.finalScore(parUnsort) << endl;
 
      sort(pat._colorComps.begin(), pat._colorComps.end(), sortByWinNum);
+     cout << pat._colorComps[0]->_id<<endl;
      pat.greedy(parSort);
-     sort(pat._colorComps.begin(), pat._colorComps.end(), sortByDiffSum);
-     pat.greedy(parDiffSumSort);
-     cout << "unsort = " << pat.finalScore(parUnsort) << endl;
      cout << "sort = " << pat.finalScore(parSort) << endl;
-     cout << "diff = " << pat.finalScore(parDiffSumSort) << endl;
-   */
+     
+     sort(pat._colorComps.begin(), pat._colorComps.end(), sortByDiffSum);
+  */
+     /*
+     Example ee1, ee2;
+     for(int i=1; i<pat._colorCompsSize; ++i){ 
+       pat.greedy(parDiffSumSort,i);
+       cout << "#" << i << " score = " << pat.finalScore(parDiffSumSort) << endl;
+       if(i == 17) ee1 = parDiffSumSort;
+       if(i == 18) ee2 = parDiffSumSort; 
+     }
+       cout << diffGene(ee1,ee2) <<endl;
+  */
   return 0;
 }
 
