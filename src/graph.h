@@ -8,6 +8,7 @@
 # include <fstream>
 # include <sstream>
 # include <cstring>
+# include "layout.h"
 using namespace std;
 
 class Node;
@@ -16,10 +17,19 @@ class Component;
 class Graph
 {
 public:
-  Graph();
-  ~Graph();
+  Graph(){};
+  ~Graph(){};
 
-  /* data */
+  bool setNode(Layout &);
+  bool setEdge();
+  bool addEdge(Node *, Node *);
+
+  int _nodeSize;
+  vector<Node *> _nodes; // all
+  int _edgeSize;
+  vector<Edge *> _edges; // all
+  int _compSize;
+  vector<Component *> _comps;
 };
 
 class Node
@@ -28,13 +38,13 @@ public:
   Node(){};
   Node(Shape*);
   ~Node(){};
-  vector<Edge *> _edge;
-
-  Shape* _shape;
 
   int _id; // the same with Shape
   int _color;
   bool _traveled;
+  vector<Edge *> _edge;
+
+  Shape* _shape;
 };
 
 class Edge
