@@ -6,9 +6,10 @@ using namespace std;
 # define RANDOMBEST 100
 # define ITER_NUM 100
 # define FINAL_ITER_NUM 10000
-# define BOUND_RATIO 0.8
+# define BOUND_RATIO 0.7
 # define BOUND_FIX 0.9
-# define NBEST 100
+# define NBEST 30
+# define AMP_FACTOR 20
 Shape::Shape(int id, int x1, int x2, int y1, int y2)
 {
   _id = id;
@@ -615,7 +616,7 @@ bool Pattern::findFix(Example * p_ex, const int &exNum)
 {
   int oneBound = exNum * BOUND_RATIO;
   int zeroBound = exNum - oneBound;
-  int fixBound = exNum * BOUND_FIX;
+  int fixBound = _colorCompsSize * BOUND_FIX;
   
   for(int i=0; i < _colorCompsSize; ++i){
     if(fixGene[i] != -1) continue;
@@ -634,7 +635,7 @@ bool Pattern::findFix(Example * p_ex, const int &exNum)
     } 
   }
 
-  if(fixNum > fixBound)
+  if(fixNum >= fixBound)
     return false;
 
   return true;
@@ -672,34 +673,36 @@ void Pattern::randomInFixGene(Example &ex, const int &iterNum)
   }
   ex = best;
 }
-
+bool sortByScore(Example i, Example j)
+{
+  return i._score > j._score;
+}
 Example Pattern::statistics()
 {
   Example maxEx;
   Example* p_ex = new Example [NBEST];
+  vector<Example> v_ex(NBEST*AMP_FACTOR);
+  
   //randomBest(p_ex, NBEST);  
    
   initFixGene(); 
-  fixNum = 0;  
-  Example* p_greedyEx = new Example [_colorCompsSize];
-  double max = 0.0;
-  double tmp = 0.0; 
-  for(int i=0; i < _colorCompsSize; ++i){ 
-    greedy(p_greedyEx[i], i);
-    tmp = finalScore(p_greedyEx[i]);
-    if(tmp > max){
-      max = tmp;
-      maxEx = p_greedyEx[i];
+  double max = 0.0, tmp; 
+  for(int i=0; i < NBEST*AMP_FACTOR; ++i){
+    random_shuffle ( _colorComps.begin(), _colorComps.end() );
+    greedy(v_ex[i], 0);
+    v_ex[i]._score = finalScore(v_ex[i]);
+  }
+
+  sort(v_ex.begin(), v_ex.end(), sortByScore);
+  for(int i=0; i<NBEST; ++i){
+    p_ex[i] = v_ex[i];
+    if(v_ex[i]._score > max){
+      maxEx = v_ex[i];
+      max = v_ex[i]._score;
     }
   }
-  findFix(p_greedyEx, _colorCompsSize);
-    
-  delete [] p_greedyEx;
-  //cout << fixNum;
-  
-  for(int i=0; i<NBEST; ++i)
-    randomInFixGene(p_ex[i], ITER_NUM);
-  
+
+  int count = 1;
   while(findFix(p_ex, NBEST)){
     max=0.0;
     for(int i=0; i<NBEST; ++i){
@@ -710,7 +713,7 @@ Example Pattern::statistics()
         maxEx = p_ex[i];
       }
     } 
-    cout << " score = " << max <<endl; 
+    cout << "#" << count++ << " score = " << max << " fixNum = " << fixNum<<endl; 
   }
 
   return maxEx;
@@ -719,6 +722,7 @@ Example Pattern::statistics()
 
 void Pattern::initFixGene()
 {
+  fixNum = 0;
   fixGene.assign(_colorCompsSize, -1);
   fixGene[0] = 0;
 }

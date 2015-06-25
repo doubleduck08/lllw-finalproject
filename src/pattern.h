@@ -116,6 +116,8 @@ public:
   // character
   vector<int> _areaA;
   vector<int> _areaB;
+
+  double _score;
   
   vector<winDensityInExp> _winDensityInExpVec;
 };

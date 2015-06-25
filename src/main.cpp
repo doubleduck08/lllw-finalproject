@@ -53,7 +53,7 @@ int main(int argc, char **argv)
   cout << "=== Greedy ===" << endl;
   
   Example tmp;
-  sort(pat._colorComps.begin(), pat._colorComps.end(), sortByDiffSum)
+  sort(pat._colorComps.begin(), pat._colorComps.end(), sortByDiffSum);
   pat.greedy(tmp, 0);
   pat.measureArea(tmp);
   cout << pat.finalScore(tmp) << endl;
