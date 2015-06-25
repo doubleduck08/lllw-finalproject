@@ -181,8 +181,14 @@ public:
   double finalScore(Example &);
 
   //6/25
+  vector<short int> fixGene;
+  int fixNum;
+  bool findFix(Example *, const int&); //integer is NBEST
   bool seletSameGene(Example &, Example &);
-
+  void initFixGene();
+  void initGene(Example &ex);
+  void randomInFixGene(Example &, const int &);
+  Example statistics();
 };
 
 # endif

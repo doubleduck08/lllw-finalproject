@@ -3,8 +3,12 @@
 # include <vector>
 # include <iostream>
 using namespace std;
-#define ITER_NUM 100000
-//#define BAD_WIN_RATIO 5
+# define RANDOMBEST 1000
+# define ITER_NUM 100
+# define FINAL_ITER_NUM 10000
+# define BOUND_RATIO 0.9
+# define BOUND_FIX 0.95
+# define NBEST 100
 Shape::Shape(int id, int x1, int x2, int y1, int y2)
 {
   _id = id;
@@ -450,7 +454,7 @@ bool Pattern::setGeneBase()
           else if( shape->_y1 <= win->_y2 && shape->_y2 >= win->_y2 ) y = win->_y2 - shape->_y1;
           else if( shape->_y2 >= win->_y1 && shape->_y1 <= win->_y1 ) y = shape->_y2 - win->_y1;
           else y = 0;
-          
+
           if( x * y > 0 )
           {
             WindowInComp* wic = new WindowInComp;
@@ -550,7 +554,7 @@ void Pattern::randomBest(Example *exp, const int &expSize)
   for(int i=0; i < expSize; ++i){
     genGene(exp[i]);
     measureArea(exp[i]);
-    for(int j=0; j < ITER_NUM; ++j){
+    for(int j=0; j < RANDOMBEST; ++j){
       Example tmp;
       genGene(tmp);
       measureArea(tmp);
@@ -579,7 +583,7 @@ double Pattern::finalScore(Example &ex)
 bool Pattern::seletSameGene(Example& ex1, Example& ex2)
 {
   int same = 0;
-  
+
   for(int i=0; i < _colorCompsSize; ++i){
     if(ex1._colorGene[i] != ex2._colorGene[i]){
       ex1._colorGene[i] = rand();
@@ -587,10 +591,102 @@ bool Pattern::seletSameGene(Example& ex1, Example& ex2)
     } 
     ++same;
   }
-  
+
   if(same != _colorCompsSize)
     return 1; //continue
   else
     return 0; //stop to selet
+
+}
+
+//statistics
+bool Pattern::findFix(Example * p_ex, const int &exNum)
+{
+  int oneBound = exNum * BOUND_RATIO;
+  int zeroBound = exNum - oneBound;
+  int fixBound = exNum * BOUND_FIX;
+  
+  for(int i=0; i < _colorCompsSize; ++i){
+    int oneNum = 0;
+    for(int j=0; j < exNum; ++j){
+      if(p_ex[j]._colorGene[i] == 1)
+        ++oneNum;
+    }
+    if(oneNum > oneBound){
+      fixGene[i] = 1;
+      ++fixNum;
+    }
+    else if(oneNum < zeroBound){
+      fixGene[i] = 0;
+      ++fixNum;
+    } 
+  }
+
+  if(fixNum > fixBound)
+    return false;
+
+  return true;
+}
+
+void Pattern::initGene(Example &ex)
+{
+  if(!ex._colorGene.empty())
+    ex._colorGene.erase(ex._colorGene.begin(), ex._colorGene.end());
+  ex._colorGene.assign(_colorCompsSize, 0);
+}
+
+void Pattern::randomInFixGene(Example &ex, const int &iterNum)
+{
+  Example best;
+  Example tmp;
+  initGene(best);
+  initGene(tmp);
+  double bestScore = 0;
+  double tmpScore = 0;
+
+  for(int k=0; k < iterNum; ++k){
+    for(int i=0; i<_colorCompsSize; ++i){
+      if(fixGene[i] == -1)
+        tmp._colorGene[i] = (rand() % 2);
+      else
+        tmp._colorGene[i] = fixGene[i];
+    }
+    measureArea(tmp);
+    tmpScore = finalScore(tmp);
+    if( tmpScore > bestScore){
+      best = tmp;
+      bestScore = tmpScore;
+    }
+  }
+  ex = best;
+}
+
+Example Pattern::statistics()
+{
+  Example* p_ex = new Example [NBEST];
+  randomBest(p_ex, NBEST);  
+  
+  initFixGene(); 
+  double max=0.0;
+  while(findFix(p_ex, NBEST)){
+    
+    for(int i=0; i<NBEST; ++i){
+      randomInFixGene(p_ex[i], ITER_NUM);
+      double tmp = finalScore(p_ex[i]);
+      if(tmp > max) max = tmp;
+    } 
+    cout << " score = " << max <<endl; 
+  }
+
+  randomInFixGene(p_ex[0], FINAL_ITER_NUM); 
+  return p_ex[0];
   
 }
+
+void Pattern::initFixGene()
+{
+  fixGene.assign(_colorCompsSize, -1);
+  fixGene[0] = 0;
+}
+
+

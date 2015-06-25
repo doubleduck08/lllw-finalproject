@@ -46,7 +46,12 @@ int main(int argc, char **argv)
   }
 
   cout << pat.finalScore(best[0]) << endl;	
+  
+  cout <<"====="<<endl;
 
+  Example tmp = pat.statistics();
+  cout << pat.finalScore(tmp) << endl;
+  
   //version 1
   /*
      Example parUnsort;
