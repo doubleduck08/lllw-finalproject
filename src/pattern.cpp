@@ -3,8 +3,7 @@
 # include <vector>
 # include <iostream>
 using namespace std;
-#define MUT_NUM 3
-#define ITER_NUM 10000
+#define ITER_NUM 100000
 //#define BAD_WIN_RATIO 5
 Shape::Shape(int id, int x1, int x2, int y1, int y2)
 {
@@ -449,7 +448,7 @@ bool Pattern::setGeneBase()
             wic->_areaB  = x * y * color;
             wic->_areaDiff = wic->_areaA - wic->_areaB;
             comp->_winInComp.push_back(wic);
-              
+
             CompInWindows* ciw = new CompInWindows;
             ciw->_comp  = comp;
             ciw->_areaA = x * y * ( 1 - color );
@@ -464,7 +463,7 @@ bool Pattern::setGeneBase()
         else i++;
       }
     }
-    
+
     comp->_diffSum = 0;
     int nn = comp->_winInComp.size();
     for(int jj = 0 ; jj < nn ; jj++ ) comp->_diffSum += comp->_winInComp[jj]->_areaDiff;
@@ -477,7 +476,7 @@ bool Pattern::measureArea(Example &exp)
   Window* win;
   Component* comp;
   int n, areaA, areaB;
-  
+
   exp._areaA.clear();
   exp._areaB.clear();
 
@@ -498,11 +497,12 @@ bool Pattern::measureArea(Example &exp)
       }
     }
 
-    winScoreInExp tmp;
+    winDensityInExp tmp;
     tmp._id = win->_id;
-    tmp._score = (double)(areaA - areaB) / (double)(_omega * _omega); 
-    exp._winScoreInExpList.push_back(tmp);
-    
+		double sub_AB = areaA - areaB > 0 ? areaA - areaB : areaB - areaA;
+    tmp._density = sub_AB / (double)(_omega * _omega); 
+    exp._winDensityInExpVec.push_back(tmp);
+
     exp._areaA.push_back(areaA);
     exp._areaB.push_back(areaB);
   }
@@ -513,134 +513,25 @@ void Pattern::genGene(Example& exp)
 {
   for (int j=0 ; j < _colorCompsSize; j++){
     int tmp = rand();
-    //cout << tmp<< " ===";
     exp._colorGene.push_back(tmp%2);
   }
 }
 
-void Pattern::mut_function(Example& exp)
-{
-  srand(time(0));
-  int mut_num = rand() % MUT_NUM;
-  int mut_pos;
-
-  for( int i = 0; i < mut_num; i++){
-    mut_pos = rand() % (_colorCompsSize);
-    exp._colorGene[mut_pos] = (exp._colorGene[mut_pos]+1) % 2; //XOR
-  }
-}
-
-void Pattern::mutation(Example *exp)
-{
-  //int len = sizeof(exp) / sizeof(*exp);
-  int len = 4;
-  for( int i = 0; i < len; ++i ){
-    mut_function(exp[i]);
-  }
-}
-
-int Pattern::drawExample(Example* candidate, const double *ratio)
-{
-  srand(time(0));
-  int CandNum = sizeof(candidate) / sizeof(*candidate);
-  double randNum = rand() / RAND_MAX;
-  int select=0;
-  for(; select < CandNum; ++select){
-    if(randNum < ratio[select])
-      break;
-  }
-  return select;
-}
-
-void Pattern::compulate(Example &ori1, Example &ori2)
-{
-  int compuRatio = _colorCompsSize / 10 + 1;
-
-  bool tmp[_colorCompsSize];
-  memset(tmp, 0, sizeof(bool) * _colorCompsSize);
-
-  for(int i=0; i < compuRatio; ++i){
-    tmp[i] = ori1._colorGene[i];
-    ori1._colorGene[i] = ori2._colorGene[i];
-    ori2._colorGene[i] = tmp[i];
-  }
-}
-
-double Pattern::getScore(Example &exp)
-{
-  int expCompSize = exp._areaA.size();
-  double score = 0;
-  
-  //init 
-  //exp._winScore.clear();
-  //winScore tmp;
-  double WinArea = _omega*_omega;
-  for(int i=0; i < expCompSize; ++i){
-    //int sub = exp._areaA[i] - exp._areaB[i];
-    double sub = (exp._areaA[i] - exp._areaB[i]) / WinArea;
-    //exp._winScore.push_back(sub);
-    //cout << "i = "<<i<<" sub = "<<sub<<endl;
-    score += sub > 0 ? sub : -sub;
-  }
-  //return score / (_omega*_omega);
-  return score;
-}
-
-Example* Pattern::findbest(Example* candidate)
-{
-  //Example candidate[CandNum];
-  int CandNum = 8;//sizeof(candidate) / sizeof(*candidate);
-  Example* seleteExp = new Example [CandNum/2];
-  double score[CandNum];
-  double sum = 0;
-  double ratio[CandNum];
-  memset(ratio, 0, sizeof(double) * CandNum);
-
-  //
-  for(int i=0; i < CandNum; ++i){
-    measureArea(candidate[i]);
-  }
-
-  for(int i=0; i < CandNum; ++i){
-    score[i] = getScore(candidate[i]); 
-  //  cout << score[i] <<endl;
-    sum += (1 / score[i]);
-  }
-
-  ratio[0] = score[0] / sum;
-  for(int i=1; i < CandNum; ++i){
-    ratio[i] = (score[i] / sum);
-    ratio[i] += ratio[i-1];
-  }
-
-  for(int i=0; i < CandNum/2; ++i){
-    seleteExp[i] = candidate[drawExample(candidate, ratio)];
-  }
-
-  //compulate
-  for(int i=0; i < CandNum/2; i+=2){
-    compulate(seleteExp[i], seleteExp[i+1]);
-  }
-
-  //mutation
-  mutation(seleteExp);
-  
-  return seleteExp;
-}
-
 void Pattern::greedy(Example &exp)
 { 
-  exp._colorGene.resize(_colorCompsSize, false);
-  double minScore = getScore(exp);
   measureArea(exp);
+  exp._colorGene.resize(_colorCompsSize, false);
+  double maxScore = finalScore(exp);
   for(int i=0; i < _colorCompsSize; ++i){
     exp._colorGene[(_colorComps[i]->_geneId)-1] = true;
     measureArea(exp);
-    if(minScore > getScore(exp))
-      minScore = getScore(exp);
+		double tmp = finalScore(exp);
+    if(maxScore < tmp)
+      maxScore = tmp;
     else
       exp._colorGene[(_colorComps[i]->_geneId)-1] = false;
   }
+  measureArea(exp);
 }
 
 void Pattern::randomBest(Example *exp, const int &expSize)
@@ -652,61 +543,23 @@ void Pattern::randomBest(Example *exp, const int &expSize)
       Example tmp;
       genGene(tmp);
       measureArea(tmp);
-      if(getScore(tmp) < getScore(exp[i]))
+      if(finalScore(tmp) > finalScore(exp[i]))
         exp[i] = tmp;
     }
   }
 }
 
-bool sortWinScore(winScoreInExp x, winScoreInExp y)
+double Pattern::finalScore(Example &ex)
 {
-  double abs_x = (x._score > 0 ? x._score : -x._score);
-  double abs_y = (y._score > 0 ? y._score : -y._score);
-  return abs_x < abs_y;
-}
-
-void Pattern::findbadGene(Example &exp)
-{
-  sort(exp._winScoreInExpList.begin(), exp._winScoreInExpList.end(), sortWinScore);
-  //int badWinNum = _windowSize / BAD_WIN_RATIO; 
-  //int badWinNum = 1;
-  Window* win = _windows[exp._winScoreInExpList[0]._id - 1];
-  
-  Example betterExp = exp;
-  
-  for(int i=0; i < win -> _compInWin.size(); ++i){
-    //int randCompId = rand() % win -> _compInWin.size();
-    //int changeGeneId = win -> _compInWin[randCompId] -> _comp -> _geneId; 
-    //exp._colorGene[changeGeneId-1] ? exp._colorGene[changeGeneId-1] = false : exp._colorGene[changeGeneId-1] = true;
-    
-    int changeGeneId = win -> _compInWin[i] -> _comp -> _geneId; 
-    exp._colorGene[changeGeneId-1] ? exp._colorGene[changeGeneId-1] = false : exp._colorGene[changeGeneId-1] = true;
-     
-    measureArea(exp);
-    
-    if(getScore(betterExp) > getScore(exp)){
-      betterExp = exp;
-    }
-    else{
-      exp._colorGene[changeGeneId-1] ? exp._colorGene[changeGeneId-1] = false : exp._colorGene[changeGeneId-1] = true;
-    }
-  
+  //int win_count = x_count * y_count;
+  double score = 0;
+  for(int i=0; i < _windowSize; ++i){
+		int sub = ex._areaA[i] - ex._areaB[i];
+		
+		score += (sub > 0 ? sub : -1*sub);
   }
 
-  exp = betterExp;
-  /*
-  for(int i=0; i < win -> _compInWin.size(); ++i){
-    int changeGeneId = win -> _compInWin[i] -> _comp -> _geneId;
-    exp._colorGene[changeGeneId-1] ? exp._colorGene[changeGeneId-1] = false : exp._colorGene[changeGeneId-1] = true;
-  }
-*/
-  //remeasure area
-  /*
-  for(int i=0; i<sizes; i++){
-  winScoreInExp  tmp = exp._winScoreInExpList[i];
-  cout << "id"<<tmp._id << " score" << tmp._score  << endl;  
-  }*/
-  //for(int i=0; i < badWinNum; ++i)
-
+  score = 100 * score / (_omega*_omega);
+  score = 100 - score / 5.0;
+  return score;
 }
-

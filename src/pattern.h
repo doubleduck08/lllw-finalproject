@@ -98,10 +98,10 @@ public:
 
 };
 
-struct winScoreInExp
+struct winDensityInExp
 {
   int _id;
-  long double _score;
+  long double _density;
 };
 
 class Example
@@ -116,7 +116,7 @@ public:
   vector<int> _areaA;
   vector<int> _areaB;
   
-  vector<winScoreInExp> _winScoreInExpList;
+  vector<winDensityInExp> _winDensityInExpVec;
 };
 
 class Pattern
@@ -177,6 +177,8 @@ public:
   void greedy(Example &);
   void randomBest(Example *, const int &);
   void findbadGene(Example &);
+  Example findGoodGene(const Example &, const Example &);
+  double finalScore(Example &);
 };
 
 # endif
