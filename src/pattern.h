@@ -54,6 +54,7 @@ struct WindowInComp
   Window *_window;
   int _areaA;
   int _areaB;
+  int _areaDiff; //A-B
 };
 
 class Component
@@ -69,6 +70,7 @@ public:
   // bool _switchColor; // used by final solution
   // int _windowSize;
   vector<WindowInComp *> _winInComp;
+  int _diffSum;
 };
 
 struct CompInWindows
@@ -93,6 +95,13 @@ public:
   // int _totalAreaB; // used by final solution
   // int _compSize;
   vector<CompInWindows *> _compInWin;
+
+};
+
+struct winDensityInExp
+{
+  int _id;
+  long double _density;
 };
 
 class Example
@@ -102,10 +111,15 @@ public:
   ~Example(){};
 
   // gene
-  vector<bool> _colorGene;
+  vector<int> _colorGene;
+
   // character
   vector<int> _areaA;
   vector<int> _areaB;
+
+  double _score;
+  
+  vector<winDensityInExp> _winDensityInExpVec;
 };
 
 class Pattern
@@ -155,7 +169,7 @@ public:
   
   //findbest
   void genGene(Example &);
-  double getScore(const Example &);
+  double getScore(Example &);
   void mut_function(Example &);
   void mutation(Example *);
   void compulate(Example &, Example &);
@@ -163,8 +177,21 @@ public:
   Example* findbest(Example*);
   bool measureArea(Example &);
 
+  void greedy(Example &, const int &);
+  void randomBest(Example *, const int &);
+  void findbadGene(Example &);
+  Example findGoodGene(const Example &, const Example &);
+  double finalScore(Example &);
 
-
+  //6/25
+  vector<short int> fixGene;
+  int fixNum;
+  bool findFix(Example *, const int&); //integer is NBEST
+  bool seletSameGene(Example &, Example &);
+  void initFixGene();
+  void initGene(Example &ex);
+  void randomInFixGene(Example &, const int &);
+  Example statistics();
 };
 
 # endif
