@@ -179,6 +179,10 @@ public:
   void findbadGene(Example &);
   Example findGoodGene(const Example &, const Example &);
   double finalScore(Example &);
+
+  //6/25
+  bool seletSameGene(Example &, Example &);
+
 };
 
 # endif

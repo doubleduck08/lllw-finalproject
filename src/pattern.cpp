@@ -575,4 +575,22 @@ double Pattern::finalScore(Example &ex)
   return score;
 }
 
-
+//selet Same Gene between two example and the remainder gene is random
+bool Pattern::seletSameGene(Example& ex1, Example& ex2)
+{
+  int same = 0;
+  
+  for(int i=0; i < _colorCompsSize; ++i){
+    if(ex1._colorGene[i] != ex2._colorGene[i]){
+      ex1._colorGene[i] = rand();
+      ex2._colorGene[i] = rand();
+    } 
+    ++same;
+  }
+  
+  if(same != _colorCompsSize)
+    return 1; //continue
+  else
+    return 0; //stop to selet
+  
+}
