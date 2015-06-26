@@ -3,20 +3,32 @@
 # include <ctime>
 # include <cstdlib>
 # include <sstream>
-
+# include "../lib/tm_usage.h"
 #include "pattern.h"
+
 using namespace std;
 
 void setting(Pattern &);
+void help_message();
 bool sortByDiffSum(Component *, Component *);
 
 int main(int argc, char **argv)
-{
+{ /*
+  if(argc != 3) {
+    help_message();
+    return 0;
+  }
+  */
+  CommonNs::TmUsage tmusg;
+  CommonNs::TmStat stat;
+
   srand(time(NULL));
+
+  tmusg.periodStart(); 
 
   Pattern pat;
   setting(pat);
-
+  
   pat.readfile( argv[1] );
   pat.nodeInitailize();
   pat.edgeInitailize();
@@ -29,7 +41,7 @@ int main(int argc, char **argv)
   pat.setGeneBase();
 
   Example max, tmp;
-/*  cout << "=== Random ===" << endl;
+  cout << "=== Random ===" << endl;
   double max_score = 0.0;
   for(int i = 0 ; i < pat.RAND_TIME ; i++)
   {
@@ -60,10 +72,17 @@ int main(int argc, char **argv)
   }
 
   cout <<"=== Shuffle & Greedy & Statistics ==="<<endl;
-  */tmp = pat.statistics();
+  tmp = pat.statistics();
+
   pat.measureArea(tmp);
-//  cout << endl;
+
+  cout << endl;
+
   cout << "final score = " << pat.finalScore(tmp) << ", fixNum = " << pat.fixNum << endl;
+  tmusg.getPeriodUsage(stat);
+
+  cout <<"# run time = " << (stat.uTime + stat.sTime) / 1000000.0 << "sec" << endl;
+  cout <<"# memory =" << stat.vmPeak / 1000.0 << "MB" << endl;
 
   return 0;
 }
@@ -114,4 +133,11 @@ void setting(Pattern &p)
 bool sortByDiffSum(Component *i, Component *j)
 {
   return (i->_diffSum > j->_diffSum);
+}
+
+void help_message() {
+  cout << "usage: lllw -[GD|DP] <input_file> <output_file>" << endl;
+  cout << "options:" << endl;
+  cout << "   GD  - Greedy" << endl;
+  cout << "   DP  - Dynamic Programming" << endl;
 }
