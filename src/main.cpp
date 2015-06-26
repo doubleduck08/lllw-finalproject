@@ -2,11 +2,12 @@
 # include <algorithm>
 # include <ctime>
 # include <cstdlib>
+# include <sstream>
 
 #include "pattern.h"
 using namespace std;
 
-void setting(Pattern&);
+void setting(Pattern &);
 bool sortByDiffSum(Component *, Component *);
 
 int main(int argc, char **argv)
@@ -62,21 +63,52 @@ int main(int argc, char **argv)
   tmp = pat.statistics();
   pat.measureArea(tmp);
   cout << endl;
-  cout << "final score = " << pat.finalScore(tmp) << endl;
+  cout << "final score = " << pat.finalScore(tmp) << ", fixNum = " << pat.fixNum << endl;
 
   return 0;
 }
 
-void setting(Pattern& pat)
+void setting(Pattern &p)
 {
-  pat.RAND_TIME = 1000;
-  pat.RANDOMBEST =  100;
-  pat.ITER_NUM = 100;
-  pat.FINAL_ITER_NUM = 10000;
-  pat.BOUND_RATIO = 0.7;
-  pat.BOUND_FIX = 0.9;
-  pat.NBEST = 30;
-  pat.AMP_FACTOR = 20;
+  ifstream fin( "./bin/setting.txt" );
+  if( fin.fail() ){
+    cout << "SETTING FAIL!\n";
+
+    p.RAND_TIME = 1000;
+    p.RANDOMBEST =  100;
+    p.ITER_NUM = 100;
+    p.FINAL_ITER_NUM = 10000;
+    p.BOUND_RATIO = 0.75;
+    p.BOUND_FIX = 0.9;
+    p.NBEST = 30;
+    p.AMP_FACTOR = 10;
+
+    return;
+  }
+
+  stringstream ss("");
+  string buf, name;
+  char ch;
+  double num[8];
+
+  for(int i = 0 ; i < 8 ; i++)
+  {
+    getline(fin, buf);
+    ss.str("");
+    ss.clear();
+    ss << buf;
+    ss >> name >> ch >> num[i];
+    // cout << name << " = " << num[i] << endl;
+  }
+
+  p.RAND_TIME = num[0];
+  p.RANDOMBEST =  num[1];
+  p.ITER_NUM = num[2];
+  p.FINAL_ITER_NUM = num[3];
+  p.BOUND_RATIO = num[4];
+  p.BOUND_FIX = num[5];
+  p.NBEST = num[6];
+  p.AMP_FACTOR = num[7];
 }
 
 bool sortByDiffSum(Component *i, Component *j)

@@ -198,8 +198,8 @@ public:
   int RANDOMBEST;
   int ITER_NUM;
   int FINAL_ITER_NUM;
-  int BOUND_RATIO;
-  int BOUND_FIX;
+  double BOUND_RATIO;
+  double BOUND_FIX;
   int NBEST;
   int AMP_FACTOR;
 };

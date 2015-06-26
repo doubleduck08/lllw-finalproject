@@ -703,10 +703,14 @@ Example Pattern::statistics()
       maxEx = v_ex[i];
       max = v_ex[i]._score;
     }
+    // cout << v_ex[i]._score << endl;
   }
 
-  int count = 1;
-  string chart_url = "http://chart.apis.google.com/chart?chtt=演化進程&chm=B,76A4FB49,0,0,0&cht=lc&chs=1000x300&chxt=y&chg=10,10&chd=t:";
+  int count = 0;
+  cout << "#" << count++ << " score = " << max << " fixNum = " << fixNum <<endl;
+
+
+  string chart_url = "http://chart.apis.google.com/chart?chtt=演化進程&chm=B,76A4FB49,0,0,0&cht=lc&chs=1000x300&chxt=x,y&chg=0,10&chd=t:";
   while(findFix(p_ex, NBEST)){
     max=0.0;
     for(int i=0; i<NBEST; ++i){
@@ -717,10 +721,10 @@ Example Pattern::statistics()
         maxEx = p_ex[i];
       }
     }
-    cout << "#" << count++ << " score = " << max << " fixNum = " << fixNum<<endl;
+    cout << "#" << count++ << " score = " << max << ", fixNum = " << fixNum<<endl;
     chart_url += to_string(max) + ",";
   }
-  chart_url += to_string(max);
+  chart_url += to_string(max) + "&chxr=0,0," + to_string(count);
   cout << "chart: " << chart_url << endl;
 
   return maxEx;
