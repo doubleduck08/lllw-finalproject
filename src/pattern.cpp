@@ -631,10 +631,27 @@ bool Pattern::findFix(Example * p_ex, const int &exNum)
     }
   }
 
+  while(mutation()){
+    --fixNum;
+  }
+
   if(fixNum >= fixBound)
     return false;
 
   return true;
+}
+
+bool Pattern::mutation()
+{ 
+  int tmp1 = rand();
+  int tmp2 = rand();
+  if(fixGene[tmp2 % _colorCompsSize] == -1)
+    return false;
+  if((tmp1 % 3) == 1){
+    fixGene[tmp2 % _colorCompsSize] = -1;
+    return true;
+  }
+  return false;
 }
 
 void Pattern::initGene(Example &ex)
@@ -709,8 +726,7 @@ Example Pattern::statistics()
   int count = 0;
   //cout << "#" << count++ << " score = " << max << " fixNum = " << fixNum <<endl;
 
-
-  string chart_url = "http://chart.apis.google.com/chart?chtt=演化進程&chm=B,76A4FB49,0,0,0&cht=lc&chs=1000x300&chxt=x,y&chg=0,10&chd=t:";
+//  string chart_url = "http://chart.apis.google.com/chart?chtt=演化進程&chm=B,76A4FB49,0,0,0&cht=lc&chs=1000x300&chxt=x,y&chg=0,10&chd=t:";
   while(findFix(p_ex, NBEST)){
     max=0.0;
     for(int i=0; i<NBEST; ++i){
@@ -721,11 +737,11 @@ Example Pattern::statistics()
         maxEx = p_ex[i];
       }
     }
-    cout << "#" << count++ << " score = " << max << ", fixNum = " << fixNum<<endl;
-    chart_url += to_string(max) + ",";
+  //  cout << "#" << count++ << " score = " << max << ", fixNum = " << fixNum<<endl;
+  //  chart_url += to_string(max) + ",";
   }
-  chart_url += to_string(max) + "&chxr=0,0," + to_string(count);
-  cout << "chart: " << chart_url << endl;
+  //chart_url += to_string(max) + "&chxr=0,0," + to_string(count);
+  //cout << "chart: " << chart_url << endl;
 
   return maxEx;
 }

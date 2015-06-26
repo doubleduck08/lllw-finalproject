@@ -29,7 +29,7 @@ int main(int argc, char **argv)
   pat.setGeneBase();
 
   Example max, tmp;
-  cout << "=== Random ===" << endl;
+/*  cout << "=== Random ===" << endl;
   double max_score = 0.0;
   for(int i = 0 ; i < pat.RAND_TIME ; i++)
   {
@@ -60,9 +60,9 @@ int main(int argc, char **argv)
   }
 
   cout <<"=== Shuffle & Greedy & Statistics ==="<<endl;
-  tmp = pat.statistics();
+  */tmp = pat.statistics();
   pat.measureArea(tmp);
-  cout << endl;
+//  cout << endl;
   cout << "final score = " << pat.finalScore(tmp) << ", fixNum = " << pat.fixNum << endl;
 
   return 0;
@@ -82,7 +82,7 @@ void setting(Pattern &p)
     p.BOUND_FIX = 0.9;
     p.NBEST = 30;
     p.AMP_FACTOR = 10;
-
+    p.MUTATION = 2;
     return;
   }
 
