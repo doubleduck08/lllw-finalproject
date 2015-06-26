@@ -707,7 +707,7 @@ Example Pattern::statistics()
   }
 
   int count = 0;
-  cout << "#" << count++ << " score = " << max << " fixNum = " << fixNum <<endl;
+  //cout << "#" << count++ << " score = " << max << " fixNum = " << fixNum <<endl;
 
 
   string chart_url = "http://chart.apis.google.com/chart?chtt=演化進程&chm=B,76A4FB49,0,0,0&cht=lc&chs=1000x300&chxt=x,y&chg=0,10&chd=t:";
