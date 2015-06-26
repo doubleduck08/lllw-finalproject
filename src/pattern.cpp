@@ -2,14 +2,10 @@
 # include <algorithm>
 # include <vector>
 # include <iostream>
+# include <sstream>
+# include <string>
 using namespace std;
-# define RANDOMBEST 100
-# define ITER_NUM 100
-# define FINAL_ITER_NUM 10000
-# define BOUND_RATIO 0.7
-# define BOUND_FIX 0.9
-# define NBEST 30
-# define AMP_FACTOR 20
+
 Shape::Shape(int id, int x1, int x2, int y1, int y2)
 {
   _id = id;
@@ -18,7 +14,6 @@ Shape::Shape(int id, int x1, int x2, int y1, int y2)
   _y1 = y1;
   _y2 = y2;
 }
-
 
 Pattern::Pattern()
 {
@@ -516,7 +511,7 @@ bool Pattern::measureArea(Example &exp)
     winDensityInExp tmp;
     tmp._id = win->_id;
     double sub_AB = areaA - areaB > 0 ? areaA - areaB : areaB - areaA;
-    tmp._density = sub_AB / (double)(_omega * _omega); 
+    tmp._density = sub_AB / (double)(_omega * _omega);
     exp._winDensityInExpVec.push_back(tmp);
 
     exp._areaA.push_back(areaA);
@@ -527,32 +522,33 @@ bool Pattern::measureArea(Example &exp)
 
 void Pattern::genGene(Example& exp)
 {
+  exp._colorGene.assign(_colorCompsSize, -1);
   for (int j=0 ; j < _colorCompsSize; j++){
     int tmp = rand();
-    exp._colorGene.push_back(tmp%2);
+    exp._colorGene[j] = tmp % 2;
   }
 }
 
 void Pattern::greedy(Example &exp, const int &fixGeneId)
-{ 
+{
   exp._colorGene.assign(_colorCompsSize, -1);
-  
+
   exp._colorGene[0] = 0; //standard for preventing reverse
   exp._colorGene[fixGeneId] = 0;
   measureArea(exp);
   double maxScore = finalScore(exp);
-  
+
   for(int i=0; i < _colorCompsSize; ++i){
-    if(exp._colorGene[(_colorComps[i]->_geneId)-1] != -1) continue; 
+    if(exp._colorGene[(_colorComps[i]->_geneId)-1] != -1) continue;
     exp._colorGene[(_colorComps[i]->_geneId)-1] = 1;
     measureArea(exp);
     double tmp1 = finalScore(exp);
-   
+
     exp._colorGene[(_colorComps[i]->_geneId)-1] = 0;
     measureArea(exp);
     double tmp0 = finalScore(exp);
     //cout << tmp1 <<" " <<tmp0;
-    
+
     if(tmp1 > tmp0)
       exp._colorGene[(_colorComps[i]->_geneId)-1] = 1;
     else
@@ -600,7 +596,7 @@ bool Pattern::seletSameGene(Example& ex1, Example& ex2)
     if(ex1._colorGene[i] != ex2._colorGene[i]){
       ex1._colorGene[i] = rand();
       ex2._colorGene[i] = rand();
-    } 
+    }
     ++same;
   }
 
@@ -617,7 +613,7 @@ bool Pattern::findFix(Example * p_ex, const int &exNum)
   int oneBound = exNum * BOUND_RATIO;
   int zeroBound = exNum - oneBound;
   int fixBound = _colorCompsSize * BOUND_FIX;
-  
+
   for(int i=0; i < _colorCompsSize; ++i){
     if(fixGene[i] != -1) continue;
     int oneNum = 0;
@@ -632,7 +628,7 @@ bool Pattern::findFix(Example * p_ex, const int &exNum)
     else if(oneNum < zeroBound){
       fixGene[i] = 0;
       ++fixNum;
-    } 
+    }
   }
 
   if(fixNum >= fixBound)
@@ -677,16 +673,23 @@ bool sortByScore(Example i, Example j)
 {
   return i._score > j._score;
 }
+string to_string(double n)
+{
+  ostringstream stm ;
+  stm << n ;
+  return stm.str() ;
+}
+
 Example Pattern::statistics()
 {
   Example maxEx;
   Example* p_ex = new Example [NBEST];
   vector<Example> v_ex(NBEST*AMP_FACTOR);
-  
-  //randomBest(p_ex, NBEST);  
-   
-  initFixGene(); 
-  double max = 0.0, tmp; 
+
+  //randomBest(p_ex, NBEST);
+
+  initFixGene();
+  double max = 0.0, tmp;
   for(int i=0; i < NBEST*AMP_FACTOR; ++i){
     random_shuffle ( _colorComps.begin(), _colorComps.end() );
     greedy(v_ex[i], 0);
@@ -700,9 +703,14 @@ Example Pattern::statistics()
       maxEx = v_ex[i];
       max = v_ex[i]._score;
     }
+    // cout << v_ex[i]._score << endl;
   }
 
-  int count = 1;
+  int count = 0;
+  //cout << "#" << count++ << " score = " << max << " fixNum = " << fixNum <<endl;
+
+
+  string chart_url = "http://chart.apis.google.com/chart?chtt=演化進程&chm=B,76A4FB49,0,0,0&cht=lc&chs=1000x300&chxt=x,y&chg=0,10&chd=t:";
   while(findFix(p_ex, NBEST)){
     max=0.0;
     for(int i=0; i<NBEST; ++i){
@@ -712,12 +720,14 @@ Example Pattern::statistics()
         max = tmp;
         maxEx = p_ex[i];
       }
-    } 
-    cout << "#" << count++ << " score = " << max << " fixNum = " << fixNum<<endl; 
+    }
+    cout << "#" << count++ << " score = " << max << ", fixNum = " << fixNum<<endl;
+    chart_url += to_string(max) + ",";
   }
+  chart_url += to_string(max) + "&chxr=0,0," + to_string(count);
+  cout << "chart: " << chart_url << endl;
 
   return maxEx;
-  
 }
 
 void Pattern::initFixGene()

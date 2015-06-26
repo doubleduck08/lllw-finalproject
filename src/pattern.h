@@ -118,7 +118,7 @@ public:
   vector<int> _areaB;
 
   double _score;
-  
+
   vector<winDensityInExp> _winDensityInExpVec;
 };
 
@@ -148,7 +148,7 @@ public:
   int _omega;
   map<int, Shape *> _shapesMap;
   vector<Shape *> _shapes;
-  
+
   int _nodeSize;
   int _edgeSize;
   int _compSize;
@@ -157,7 +157,7 @@ public:
   vector<Edge *> _edges; // all
   vector<Component *> _comps;
   vector<Component *> _colorComps;
-  
+
   int _boxX1;
   int _boxX2;
   int _boxY1;
@@ -166,7 +166,7 @@ public:
   vector<Window*> _windows;
 
   vector<Example*> _examples;
-  
+
   //findbest
   void genGene(Example &);
   double getScore(Example &);
@@ -192,6 +192,16 @@ public:
   void initGene(Example &ex);
   void randomInFixGene(Example &, const int &);
   Example statistics();
+
+  // for setting
+  int RAND_TIME;
+  int RANDOMBEST;
+  int ITER_NUM;
+  int FINAL_ITER_NUM;
+  double BOUND_RATIO;
+  double BOUND_FIX;
+  int NBEST;
+  int AMP_FACTOR;
 };
 
 # endif
