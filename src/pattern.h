@@ -118,6 +118,7 @@ public:
   vector<int> _areaB;
 
   double _score;
+  double _tmpScore;
 
   vector<winDensityInExp> _winDensityInExpVec;
 };
@@ -191,18 +192,21 @@ public:
   void initFixGene();
   void initGene(Example &ex);
   void randomInFixGene(Example &, const int &);
+  void mySuffle();
   Example statistics();
   bool mutation();
 
   // for setting
   int RAND_TIME;
-  int RANDOMBEST;
-  int ITER_NUM;
-  int FINAL_ITER_NUM;
+  // int RANDOMBEST;
+  int RAND_TIME_IN_FIXGENE;
+  // int FINAL_ITER_NUM;
   double BOUND_RATIO;
   double BOUND_FIX;
-  int NBEST;
+  int NUM_PER_AGE;
+  int FIRST_AGE;
   int AMP_FACTOR;
+  int PROB;
 };
 
 # endif

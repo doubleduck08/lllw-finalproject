@@ -1,7 +1,13 @@
 all:
-	cd src; \
+	cd lib; \
+	make; \
+	cd ../src; \
 	make
 
 clean:
-	cd src;\
+	cd lib; \
+	make clean; \
+	cd ../src; \
 	make clean
+
+

@@ -5,7 +5,7 @@
 # include <sstream>
 # include <string>
 using namespace std;
-#define PROB 3
+
 Shape::Shape(int id, int x1, int x2, int y1, int y2)
 {
   _id = id;
@@ -553,24 +553,26 @@ void Pattern::greedy(Example &exp, const int &fixGeneId)
       exp._colorGene[(_colorComps[i]->_geneId)-1] = 1;
     else
       exp._colorGene[(_colorComps[i]->_geneId)-1] = 0;
+
+    // if(i == _colorCompsSize *3/4 ) exp._tmpScore = (tmp0 > tmp1) ? tmp0 : tmp1;
   }
   measureArea(exp);
 }
 
-void Pattern::randomBest(Example *exp, const int &expSize)
-{
-  for(int i=0; i < expSize; ++i){
-    genGene(exp[i]);
-    measureArea(exp[i]);
-    for(int j=0; j < RANDOMBEST; ++j){
-      Example tmp;
-      genGene(tmp);
-      measureArea(tmp);
-      if(finalScore(tmp) > finalScore(exp[i]))
-        exp[i] = tmp;
-    }
-  }
-}
+// void Pattern::randomBest(Example *exp, const int &expSize)
+// {
+//   for(int i=0; i < expSize; ++i){
+//     genGene(exp[i]);
+//     measureArea(exp[i]);
+//     for(int j=0; j < RANDOMBEST; ++j){
+//       Example tmp;
+//       genGene(tmp);
+//       measureArea(tmp);
+//       if(finalScore(tmp) > finalScore(exp[i]))
+//         exp[i] = tmp;
+//     }
+//   }
+// }
 
 double Pattern::finalScore(Example &ex)
 {
@@ -682,53 +684,62 @@ string myToString(double n)
   stm << n ;
   return stm.str() ;
 }
+void Pattern::mySuffle()
+{
+  int a = rand() % _colorCompsSize;
+  int b = rand() % _colorCompsSize;
+  if(a == b) b = (a + 1) % _colorCompsSize;
+  swap(_colorComps[a], _colorComps[b]);
+}
 
 Example Pattern::statistics()
 {
   Example maxEx;
-  Example* p_ex = new Example [NBEST];
-  vector<Example> v_ex(NBEST*AMP_FACTOR);
+  Example* p_ex = new Example [NUM_PER_AGE];
+  vector<Example> v_ex(FIRST_AGE * AMP_FACTOR);
 
-  //randomBest(p_ex, NBEST);
+  //randomBest(p_ex, NUM_PER_AGE);
 
   initFixGene();
   double max = 0.0, tmp;
-  for(int i=0; i < NBEST*AMP_FACTOR; ++i){
+  for(int i=0; i < FIRST_AGE * AMP_FACTOR; ++i){
     random_shuffle ( _colorComps.begin(), _colorComps.end() );
+    // mySuffle();
     greedy(v_ex[i], 0);
     v_ex[i]._score = finalScore(v_ex[i]);
   }
 
   sort(v_ex.begin(), v_ex.end(), sortByScore);
-  for(int i=0; i<NBEST; ++i){
+  for(int i=0; i < NUM_PER_AGE; ++i){
     p_ex[i] = v_ex[i];
     if(v_ex[i]._score > max){
       maxEx = v_ex[i];
       max = v_ex[i]._score;
     }
-    // cout << v_ex[i]._score << endl;
+    // cout << "#" << i << "score = " << v_ex[i]._score << endl;
+    // cout << "#" << i << "score = " << v_ex[i]._score << " tmp = " << v_ex[i]._tmpScore << endl;
   }
 
   int count = 0;
-  //cout << "#" << count++ << " score = " << max << " fixNum = " << fixNum <<endl;
+  //cout << "#" << count++ << " score = " << max << " // max of parents" << endl;
 
 
-  string chart_url = "http://chart.apis.google.com/chart?chtt=演化進程&chm=B,76A4FB49,0,0,0&cht=lc&chs=1000x300&chxt=x,y&chg=0,10&chd=t:";
-  while(findFix(p_ex, NBEST)){
+  // string chart_url = "http://chart.apis.google.com/chart?chtt=演化進程&chm=B,76A4FB49,0,0,0&cht=lc&chs=1000x300&chxt=x,y&chg=0,10&chd=t:";
+  while(findFix(p_ex, NUM_PER_AGE)){
     max=0.0;
-    for(int i=0; i<NBEST; ++i){
-      randomInFixGene(p_ex[i], ITER_NUM);
+    for(int i=0; i<NUM_PER_AGE; ++i){
+      randomInFixGene(p_ex[i], RAND_TIME_IN_FIXGENE);
       tmp = finalScore(p_ex[i]);
       if(tmp > max){
         max = tmp;
         maxEx = p_ex[i];
       }
     }
-    cout << "#" << count++ << " score = " << max << ", fixNum = " << fixNum<<endl;
-    chart_url += myToString(max) + ",";
+    // cout << "#" << count++ << " score = " << max << ", fixNum = " << fixNum<<endl;
+    // chart_url += myToString(max) + ",";
   }
-  chart_url += myToString(max) + "&chxr=0,0," + myToString(count);
-  cout << "chart: " << chart_url << endl;
+  // chart_url += myToString(max) + "&chxr=0,0," + myToString(count);
+  // cout << "chart: " << chart_url << endl;
 
   return maxEx;
 }
@@ -741,7 +752,7 @@ void Pattern::initFixGene()
 }
 
 bool Pattern::mutation()
-{ 
+{
   int tmp1 = rand() % PROB;
   int tmp2 = rand() % _colorCompsSize;
   if(fixGene[tmp2] == -1)
