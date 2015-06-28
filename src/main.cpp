@@ -102,16 +102,14 @@ int main(int argc, char **argv)
   cout << "    score = " << pat.finalScore(tmp) << endl << endl;
 
   tmusg.getPeriodUsage(stat);
-  cout << endl;
-<<<<<<< HEAD
+  
   cout << "final score = " << pat.finalScore(tmp) << ", fixNum = " << pat.fixNum << endl;
   
   pat.print(tmp, argv[2]);
-=======
+  
   cout << "    runtime = " << (stat.uTime + stat.sTime) / 1000000.0 << " sec \n";
   cout << "    memory  = " << stat.vmPeak / 1000.0 << " MB \n";
 
->>>>>>> userSurface_2
   return 0;
 }
 

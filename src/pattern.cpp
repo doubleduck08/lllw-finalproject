@@ -765,7 +765,6 @@ bool Pattern::mutation()
 
 }
 
-<<<<<<< HEAD
 void Pattern::print(const Example &exp, const char *fileName)
 {
   double winArea = _omega * _omega;
@@ -804,7 +803,7 @@ void Pattern::print(const Example &exp, const char *fileName)
   }
   fout.close();
 }
-=======
+
 void Pattern::resetWeight()
 {
   for(int i = 0 ; i < _compSize ; i++) _comps[i]->_weight = 0;
@@ -814,4 +813,3 @@ void Pattern::addWeight(int amp)
   for(int i = 0 ; i < _colorCompsSize ; i++) _colorComps[i]->_weight += amp * (_colorCompsSize - i);
 }
 
->>>>>>> userSurface_2
