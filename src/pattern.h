@@ -71,6 +71,7 @@ public:
   // int _windowSize;
   vector<WindowInComp *> _winInComp;
   int _diffSum;
+  int _weight;
 };
 
 struct CompInWindows
@@ -118,6 +119,7 @@ public:
   vector<int> _areaB;
 
   double _score;
+  double _tmpScore;
 
   vector<winDensityInExp> _winDensityInExpVec;
 };
@@ -191,19 +193,27 @@ public:
   void initFixGene();
   void initGene(Example &ex);
   void randomInFixGene(Example &, const int &);
+  void mySuffle();
   Example statistics();
   bool mutation();
   void print(const Example &, const char *);
 
+  // edit weight of comps
+  void resetWeight();
+  void addWeight(int);
+
   // for setting
   int RAND_TIME;
-  int RANDOMBEST;
-  int ITER_NUM;
-  int FINAL_ITER_NUM;
+  // int RANDOMBEST;
+  int RAND_TIME_IN_FIXGENE;
+  // int FINAL_ITER_NUM;
   double BOUND_RATIO;
   double BOUND_FIX;
-  int NBEST;
+  int NUM_PER_AGE;
+  int FIRST_AGE;
   int AMP_FACTOR;
+  int PROB;
+  int WEIGHTONDIFF;
 };
 
 # endif
