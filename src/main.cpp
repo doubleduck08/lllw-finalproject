@@ -64,7 +64,8 @@ int main(int argc, char **argv)
   pat.measureArea(tmp);
   cout << endl;
   cout << "final score = " << pat.finalScore(tmp) << ", fixNum = " << pat.fixNum << endl;
-  pat.print(tmp, "out123");
+  
+  pat.print(tmp, argv[2]);
   return 0;
 }
 

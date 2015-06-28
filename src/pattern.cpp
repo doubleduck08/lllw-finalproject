@@ -760,37 +760,33 @@ void Pattern::print(const Example &exp, const char *fileName)
   ofstream fout(fileName);
   
   for(int i=0; i<_windowSize; ++i){
-    fout << "WIN[" << i << "]="
-         << _windows[i]->_x1 << ","
-         << _windows[i]->_y1 << ","
-         << _windows[i]->_x2 << ","
-         << _windows[i]->_y2 << "("
-         << exp._areaA[i] / winArea * 100 << ","
+    Window* w = _windows[i];
+    fout << "WIN[" << i << "]=" 
+         << w->_x1 << "," << w->_y1 << "," << w->_x2 << "," << w->_y2 << "("
+         << exp._areaA[i] / winArea * 100 << "," 
          << exp._areaB[i] / winArea * 100 << ")" 
          << endl;
   }
 
   for(int i=0; i<_compSize; ++i){
+    fout << "GROUP" << endl;
+    int nodeSize = _comps[i]->_nodes.size();
     if(_comps[i]->_colorable){
-      int gene = exp._colorGene[_comps[i]->_geneId]; 
-      for(int j=0; j<_comps[i]->_nodes.size(); ++j){
+      int gene = exp._colorGene[_comps[i]->_geneId];
+      for(int j=0; j < nodeSize; ++j){
+        Shape* s = _comps[i]->_nodes[j]->_shape;
         if(gene == _comps[i]->_nodes[j]->_color)
-          fout << "CA[" << i << "]";
+          fout << "CA[" << i << "]=";
         else
-          fout << "CB[" << i << "]";
+          fout << "CB[" << i << "]=";  
+        fout << s->_x1 << "," << s->_y1 << "," << s->_x2 << "," << s->_y2 << endl;
       }
-      fout << _comps[i]->_nodes[i]->_shape->_x1 << ","
-           << _comps[i]->_nodes[i]->_shape->_y1 << ","
-           << _comps[i]->_nodes[i]->_shape->_x2 << ","
-           << _comps[i]->_nodes[i]->_shape->_y2 << endl;
     }
     else{ //uncolor comps
-      for(int j=0; j<_comps[i]->_nodes.size(); ++j){
+      for(int j=0; j < nodeSize; ++j){
+        Shape* s = _comps[i]->_nodes[j]->_shape;
         fout << "NO[" << i << "]="
-             << _comps[i]->_nodes[i]->_shape->_x1 << ","
-             << _comps[i]->_nodes[i]->_shape->_y1 << ","
-             << _comps[i]->_nodes[i]->_shape->_x2 << ","
-             << _comps[i]->_nodes[i]->_shape->_y2 << endl;
+             << s->_x1 << "," << s->_y1 << "," << s->_x2 << "," << s->_y2 << endl;
       }
     }
   }
