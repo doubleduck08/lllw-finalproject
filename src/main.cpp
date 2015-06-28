@@ -33,6 +33,13 @@ int main(int argc, char **argv)
   pat.setWindows();
   pat.setGeneBase();
 
+  cout << "    DATA OF pat:" << endl;
+  cout << "    _nodeSize = " << pat._nodeSize << endl;
+  cout << "    _windowSize = " << pat._windowSize << endl;
+  cout << "    _compSize = " << pat._compSize << endl;
+  cout << "    _colorCompsSize = " << pat._colorCompsSize << endl;
+  cout << endl;
+
   Example max, tmp;
   double max_score = 0.0;
   cout << "    ============== Random ===============" << endl;
