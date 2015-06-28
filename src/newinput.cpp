@@ -8,7 +8,7 @@
 using namespace std;
 
 #define SHAPE_MAX_LEN 4
-#define MAP_LEN 1000
+#define MAP_LEN 500
 #define TEST_NUM 100 //test can the random shape be put in
 
 typedef struct
