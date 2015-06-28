@@ -11,6 +11,8 @@ using namespace std;
 
 void setting(Pattern &);
 bool sortByDiffSum(Component *, Component *);
+bool sortByWinSize(Component *, Component *);
+bool sortByWeight(Component *, Component *);
 
 int main(int argc, char **argv)
 {
@@ -59,10 +61,28 @@ int main(int argc, char **argv)
   cout << "    score = " << max_score << endl << endl;
 
   cout << "    ============== Greedy ===============" << endl;
+  pat.resetWeight();  // edit weight of comps
   sort(pat._colorComps.begin(), pat._colorComps.end(), sortByDiffSum);
   pat.greedy(tmp, 0);
   pat.measureArea(tmp);
-  cout << "    score = " << pat.finalScore(tmp) << endl << endl;
+  pat.addWeight(pat.WEIGHTONDIFF);  // edit weight of comps
+  // for(int i = 0 ; i < 20 ; i++) cout << pat._colorComps[i]->_id << " "; cout << endl;
+  cout << "    score = " << pat.finalScore(tmp) << " (sortByDiffSum)" << endl;
+
+
+  sort(pat._colorComps.begin(), pat._colorComps.end(), sortByWinSize);
+  pat.greedy(tmp, 0);
+  pat.measureArea(tmp);
+  pat.addWeight(100 - pat.WEIGHTONDIFF);  // edit weight of comps
+  // for(int i = 0 ; i < 20 ; i++) cout << pat._colorComps[i]->_id << " "; cout << endl;
+  cout << "    score = " << pat.finalScore(tmp) << " (sortByWinSize)" << endl;
+
+  sort(pat._colorComps.begin(), pat._colorComps.end(), sortByWeight);
+  pat.greedy(tmp, 0);
+  pat.measureArea(tmp);
+  // for(int i = 0 ; i < 20 ; i++) cout << pat._colorComps[i]->_id << " "; cout << endl;
+  cout << "    score = " << pat.finalScore(tmp) << " (sortByWeight)" << endl << endl;
+
 
   cout << "    ========= Shuffle & Greedy ==========" << endl;
   max_score = 0.0;
@@ -102,6 +122,7 @@ void setting(Pattern &p)
   p.NUM_PER_AGE = 30;
   p.AMP_FACTOR = 10;
   p.PROB = 3;
+  p.WEIGHTONDIFF = 10;
 
   ifstream fin( "./bin/setting.txt" );
   if( fin.fail() ){
@@ -113,9 +134,8 @@ void setting(Pattern &p)
   string buf, name;
   char ch;
   double num;
-  for(int i = 0 ; i < 8 ; i++)
+  while(getline(fin, buf))
   {
-    getline(fin, buf);
     ss.str("");
     ss.clear();
 
@@ -132,10 +152,19 @@ void setting(Pattern &p)
     else if(name == "NUM_PER_AGE")    p.NUM_PER_AGE = num;
     else if(name == "AMP_FACTOR")     p.AMP_FACTOR = num;
     else if(name == "PROB")           p.PROB = num;
+    else if(name == "WEIGHTONDIFF")   p.WEIGHTONDIFF = num;
   }
 }
 
 bool sortByDiffSum(Component *i, Component *j)
 {
   return (i->_diffSum > j->_diffSum);
+}
+bool sortByWinSize(Component *i, Component *j)
+{
+  return (i->_winInComp.size() > j->_winInComp.size());
+}
+bool sortByWeight(Component *i, Component *j)
+{
+  return (i->_weight > j->_weight);
 }

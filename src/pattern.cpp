@@ -764,3 +764,13 @@ bool Pattern::mutation()
   return false;
 
 }
+
+void Pattern::resetWeight()
+{
+  for(int i = 0 ; i < _compSize ; i++) _comps[i]->_weight = 0;
+}
+void Pattern::addWeight(int amp)
+{
+  for(int i = 0 ; i < _colorCompsSize ; i++) _colorComps[i]->_weight += amp * (_colorCompsSize - i);
+}
+

@@ -71,6 +71,7 @@ public:
   // int _windowSize;
   vector<WindowInComp *> _winInComp;
   int _diffSum;
+  int _weight;
 };
 
 struct CompInWindows
@@ -196,6 +197,10 @@ public:
   Example statistics();
   bool mutation();
 
+  // edit weight of comps
+  void resetWeight();
+  void addWeight(int);
+
   // for setting
   int RAND_TIME;
   // int RANDOMBEST;
@@ -207,6 +212,7 @@ public:
   int FIRST_AGE;
   int AMP_FACTOR;
   int PROB;
+  int WEIGHTONDIFF;
 };
 
 # endif
