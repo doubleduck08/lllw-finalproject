@@ -703,8 +703,10 @@ Example Pattern::statistics()
   initFixGene();
   double max = 0.0, tmp;
   for(int i=0; i < FIRST_AGE * AMP_FACTOR; ++i){
-    random_shuffle ( _colorComps.begin(), _colorComps.end() );
-    // mySuffle();
+    //random_shuffle ( _colorComps.begin(), _colorComps.end() ); 
+    for(int n=0; i < 6;++i){
+      mySuffle();
+    }
     greedy(v_ex[i], 0);
     v_ex[i]._score = finalScore(v_ex[i]);
   }
@@ -735,7 +737,7 @@ Example Pattern::statistics()
         maxEx = p_ex[i];
       }
     }
-    // cout << "#" << count++ << " score = " << max << ", fixNum = " << fixNum<<endl;
+    cout << "#" << count++ << " score = " << max << ", fixNum = " << fixNum<<endl;
     // chart_url += myToString(max) + ",";
   }
   // chart_url += myToString(max) + "&chxr=0,0," + myToString(count);
