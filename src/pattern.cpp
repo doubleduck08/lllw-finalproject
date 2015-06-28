@@ -5,7 +5,7 @@
 # include <sstream>
 # include <string>
 using namespace std;
-
+#define PROB 3
 Shape::Shape(int id, int x1, int x2, int y1, int y2)
 {
   _id = id;
@@ -631,6 +631,9 @@ bool Pattern::findFix(Example * p_ex, const int &exNum)
     }
   }
 
+  while(mutation())
+    --fixNum;
+
   if(fixNum >= fixBound)
     return false;
 
@@ -673,7 +676,7 @@ bool sortByScore(Example i, Example j)
 {
   return i._score > j._score;
 }
-string to_string(double n)
+string myToString(double n)
 {
   ostringstream stm ;
   stm << n ;
@@ -722,9 +725,9 @@ Example Pattern::statistics()
       }
     }
     cout << "#" << count++ << " score = " << max << ", fixNum = " << fixNum<<endl;
-    chart_url += to_string(max) + ",";
+    chart_url += myToString(max) + ",";
   }
-  chart_url += to_string(max) + "&chxr=0,0," + to_string(count);
+  chart_url += myToString(max) + "&chxr=0,0," + myToString(count);
   cout << "chart: " << chart_url << endl;
 
   return maxEx;
@@ -735,4 +738,18 @@ void Pattern::initFixGene()
   fixNum = 0;
   fixGene.assign(_colorCompsSize, -1);
   fixGene[0] = 0;
+}
+
+bool Pattern::mutation()
+{ 
+  int tmp1 = rand() % PROB;
+  int tmp2 = rand() % _colorCompsSize;
+  if(fixGene[tmp2] == -1)
+    return false;
+  if(tmp1 == 1){
+    fixGene[tmp2] = -1;
+    return true;
+  }
+  return false;
+
 }
