@@ -753,3 +753,46 @@ bool Pattern::mutation()
   return false;
 
 }
+
+void Pattern::print(const Example &exp, const char *fileName)
+{
+  double winArea = _omega * _omega;
+  ofstream fout(fileName);
+  
+  for(int i=0; i<_windowSize; ++i){
+    fout << "WIN[" << i << "]="
+         << _windows[i]->_x1 << ","
+         << _windows[i]->_y1 << ","
+         << _windows[i]->_x2 << ","
+         << _windows[i]->_y2 << "("
+         << exp._areaA[i] / winArea * 100 << ","
+         << exp._areaB[i] / winArea * 100 << ")" 
+         << endl;
+  }
+
+  for(int i=0; i<_compSize; ++i){
+    if(_comps[i]->_colorable){
+      int gene = exp._colorGene[_comps[i]->_geneId]; 
+      for(int j=0; j<_comps[i]->_nodes.size(); ++j){
+        if(gene == _comps[i]->_nodes[j]->_color)
+          fout << "CA[" << i << "]";
+        else
+          fout << "CB[" << i << "]";
+      }
+      fout << _comps[i]->_nodes[i]->_shape->_x1 << ","
+           << _comps[i]->_nodes[i]->_shape->_y1 << ","
+           << _comps[i]->_nodes[i]->_shape->_x2 << ","
+           << _comps[i]->_nodes[i]->_shape->_y2 << endl;
+    }
+    else{ //uncolor comps
+      for(int j=0; j<_comps[i]->_nodes.size(); ++j){
+        fout << "NO[" << i << "]="
+             << _comps[i]->_nodes[i]->_shape->_x1 << ","
+             << _comps[i]->_nodes[i]->_shape->_y1 << ","
+             << _comps[i]->_nodes[i]->_shape->_x2 << ","
+             << _comps[i]->_nodes[i]->_shape->_y2 << endl;
+      }
+    }
+  }
+  fout.close();
+}

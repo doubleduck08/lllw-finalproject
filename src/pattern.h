@@ -193,6 +193,7 @@ public:
   void randomInFixGene(Example &, const int &);
   Example statistics();
   bool mutation();
+  void print(const Example &, const char *);
 
   // for setting
   int RAND_TIME;
